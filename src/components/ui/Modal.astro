@@ -1,15 +1,29 @@
 ---
-// src/components/Modal.astro
 interface Props {
   id: string;
   title?: string;
   message?: string;
+  type?: 'warning' | 'info' | 'success'; // Tambahan untuk variasi ikon/warna
 }
 
-const { id, title = "Konfirmasi", message = "Apakah Anda yakin?" } = Astro.props;
+const { id, title = "Konfirmasi", message = "Apakah Anda yakin?", type = 'warning' } = Astro.props;
+
+// Logika Warna & Ikon Berdasarkan Tipe
+let iconSvg = '';
+let btnColorClass = '';
+
+if (type === 'warning') {
+    // Ikon Tanda Seru Merah
+    btnColorClass = 'bg-red-600 hover:bg-red-700 focus:ring-red-300';
+    iconSvg = `<svg class="mx-auto mb-4 text-red-500 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>`;
+} else if (type === 'info') {
+    // Ikon Info Biru (Cocok untuk Konfirmasi Beli)
+    btnColorClass = 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-300';
+    iconSvg = `<svg class="mx-auto mb-4 text-blue-500 w-12 h-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>`;
+}
 ---
 
-<div id={id} tabindex="-1" class="hidden fixed inset-0 z-[9999] flex items-center justify-center w-full h-full bg-black/60 backdrop-blur-sm p-4 overflow-x-hidden overflow-y-auto">
+<div id={id} tabindex="-1" class="hidden fixed inset-0 z-[9999] flex items-center justify-center w-full h-full bg-black/60 backdrop-blur-sm p-4 overflow-x-hidden overflow-y-auto transition-opacity duration-300">
     
     <div class="relative w-full max-w-md max-h-full">
         
@@ -23,19 +37,21 @@ const { id, title = "Konfirmasi", message = "Apakah Anda yakin?" } = Astro.props
             </button>
 
             <div class="p-6 text-center">
-                <svg class="mx-auto mb-4 text-red-500 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                </svg>
+                <Fragment set:html={iconSvg} />
                 
-                <h3 class="mb-5 text-lg font-normal text-gray-600 dark:text-gray-300">{message}</h3>
+                <h3 class="mb-2 text-xl font-bold text-gray-800 dark:text-white">{title}</h3>
+                
+                <div class="mb-6 text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                    <Fragment set:html={message} />
+                </div>
                 
                 <div class="flex justify-center gap-3">
-                    <button id={`${id}-confirm-btn`} data-modal-hide={id} type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center shadow-md transition-colors">
+                    <button id={`${id}-confirm-btn`} data-modal-hide={id} type="button" class={`text-white ${btnColorClass} focus:ring-4 focus:outline-none font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center shadow-md transition-colors`}>
                         Ya, Lanjutkan
                     </button>
                     
-                    <button data-modal-hide={id} type="button" class="text-gray-900 bg-white border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 hover:text-blue-700 hover:bg-gray-100 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600 transition-colors">
-                        Tidak, Kembali
+                    <button id={`${id}-cancel-btn`} data-modal-hide={id} type="button" class="text-gray-900 bg-white border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 hover:text-blue-700 hover:bg-gray-100 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600 transition-colors">
+                        Batal
                     </button>
                 </div>
             </div>
@@ -44,39 +60,43 @@ const { id, title = "Konfirmasi", message = "Apakah Anda yakin?" } = Astro.props
 </div>
 
 <script define:vars={{ id }}>
+    // Script ini harus dibuat "resilient" agar bisa dipanggil berulang kali
     function setupModal() {
         const modal = document.getElementById(id);
+        
+        // Selector global untuk trigger modal (jika ada tombol lain di luar sana yg mau buka modal ini)
         const hideButtons = document.querySelectorAll(`[data-modal-hide="${id}"]`);
         const showButtons = document.querySelectorAll(`[data-modal-target="${id}"]`);
 
         if (!modal) return;
 
-        function closeModal() { modal.classList.add('hidden'); }
-        function openModal() { modal.classList.remove('hidden'); }
+        function closeModal() { 
+            modal.classList.add('hidden'); 
+            modal.classList.remove('flex'); // Hapus flex agar benar-benar hilang
+        }
+        
+        function openModal() { 
+            modal.classList.remove('hidden'); 
+            modal.classList.add('flex'); // Tambah flex untuk centering
+        }
 
-        // Mencegah duplicate listeners dengan flagging (seperti yang kita pelajari sebelumnya)
+        // Expose ke Global Window
+        window[`openModal_${id}`] = openModal;
+        window[`closeModal_${id}`] = closeModal;
+
+        // Pasang Listener (Clone node trick untuk membersihkan listener lama)
         hideButtons.forEach(btn => {
-            if (btn.dataset.hasListener === "true") return;
+            // Kita tidak clone di sini karena tombol close ada banyak (X dan Batal)
+            // Cukup pastikan listener tidak dobel dengan cek flag simple atau remove dulu
+            btn.removeEventListener('click', closeModal);
             btn.addEventListener('click', closeModal);
-            btn.dataset.hasListener = "true";
         });
 
         showButtons.forEach(btn => {
-            if (btn.dataset.hasListener === "true") return;
+            btn.removeEventListener('click', openModal);
             btn.addEventListener('click', openModal);
-            btn.dataset.hasListener = "true";
         });
-
-        window[`openModal_${id}`] = openModal;
-        window[`closeModal_${id}`] = closeModal;
     }
     
-    // Setup saat load awal dan saat navigasi (Astro ViewTransitions)
     document.addEventListener('astro:page-load', setupModal);
-    
-    // Fallback jika tidak menggunakan ViewTransitions
-    if (!window.hasRunSetupModal) {
-        setupModal();
-        window.hasRunSetupModal = true;
-    }
 </script>
