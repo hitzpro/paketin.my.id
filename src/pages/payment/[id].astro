@@ -17,7 +17,7 @@ let formattedPrice = "Rp 0";
 try {
     // Fetch Server Side (SSR)
     // Gunakan 127.0.0.1 langsung atau config jika mendukung SSR
-    const res = await fetch(`http://127.0.0.1:3200/payment/status/${id}`);
+    const res = await fetch(`${API_BASE_URL}/payment/status/${id}`);
     if (res.ok) {
         transaction = await res.json();
         formattedPrice = `Rp ${Number(transaction.total_price).toLocaleString('id-ID')}`;

@@ -6,6 +6,7 @@ import Navbar from '../../components/ui/Navbar.astro';
 import Footer from '../../components/ui/Footer.astro';
 import BottomNav from '../../components/ui/Bottom-Nav.astro';
 import ProductList from '../../components/products/ProductList.astro';
+import { API_BASE_URL } from '../../config';
 
 const { slug } = Astro.params;
 const categoryName = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : 'Kategori';
@@ -13,7 +14,7 @@ const categoryName = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : 'Kate
 // 1. Fetch Semua Produk
 let products = [];
 try {
-    const res = await fetch('http://localhost:3200/products');
+    const res = await fetch(`${API_BASE_URL}/products`);
     const json = await res.json();
     products = json.data || [];
 } catch (e) {

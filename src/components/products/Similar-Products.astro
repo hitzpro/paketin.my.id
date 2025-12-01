@@ -1,6 +1,6 @@
 ---
 import ProductCard from './Product-Card.astro';
-
+import { API_BASE_URL } from '../../config.js';
 interface Props {
     currentProductId: number;
     // Category tidak lagi wajib dikirim dari parent, 
@@ -15,7 +15,7 @@ let similarProducts = [];
 try {
     // Panggil Endpoint Backend Baru
     // Gunakan IP 127.0.0.1 agar lebih stabil di Node environment
-    const response = await fetch(`http://127.0.0.1:3200/products/similar/${currentProductId}`);
+    const response = await fetch(`${API_BASE_URL}/products/similar/${currentProductId}`);
     
     if (response.ok) {
         const result = await response.json();

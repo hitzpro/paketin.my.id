@@ -27,9 +27,10 @@ const { productId, priceFormatted } = Astro.props;
 </div>
 
 <script>
+    import { API_BASE_URL } from '../../config';
     document.addEventListener('astro:page-load', () => {
         const btnBuy = document.getElementById('btn-buy-now');
-        const API_URL = 'http://localhost:3200'; // Pastikan URL benar
+        const API_URL = API_BASE_URL;
 
         if (btnBuy) {
             btnBuy.addEventListener('click', async () => {
