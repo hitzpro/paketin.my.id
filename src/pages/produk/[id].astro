@@ -1,5 +1,4 @@
 ---
-// src/pages/produk/[id].astro
 export const prerender = false;
 
 import Layout from '../../layouts/Layout.astro';
@@ -14,14 +13,13 @@ import ProductPriceBox from '../../components/products/ProductPriceBox.astro';
 
 import SimilarProducts from '../../components/products/Similar-Products.astro';
 import Modal from '../../components/ui/Modal.astro';
-import { API_BASE_URL } from '../../config'; // Import Config
+import { API_BASE_URL } from '../../config'; 
 
 const { id } = Astro.params;
 
-// 1. Fetch data produk (Server Side)
+// 1. Fetch data produk
 let product = null;
 try {
-    // Gunakan API_BASE_URL
     const res = await fetch(`${API_BASE_URL}/products`);
     if (res.ok) {
         const result = await res.json();
@@ -33,17 +31,24 @@ try {
 
 if (!product) return Astro.redirect('/404');
 
-const priceFormatted = `Rp ${Number(product.price).toLocaleString('id-ID')}`;
+// --- 2. KALKULASI HARGA (FIXED) ---
+const basePrice = Number(product.price);
+const ppn = basePrice * 0.11; // PPN 11%
+const totalPrice = basePrice + ppn; // Total Akhir
 
-// 2. Tentukan Tipe Produk (Pulsa/Kuota)
+// Format ke Rupiah
+const basePriceFormatted = `Rp ${basePrice.toLocaleString('id-ID')}`;
+const ppnFormatted = `Rp ${ppn.toLocaleString('id-ID')}`;
+const totalFormatted = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+
+// 3. Tentukan Tipe Produk
 const isPulsa = product.type === 'CREDIT' || product.category === 'Top-up Promo';
 const badgeClass = isPulsa
     ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800' 
     : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800'; 
 
-// 3. Konten Accordion Dinamis
+// 4. Konten Accordion
 let detailContent = "";
-
 if (isPulsa) {
     detailContent = `
         <ul class="space-y-3">
@@ -62,13 +67,6 @@ if (isPulsa) {
     `;
 }
 
-const price = Number(product.price);
-const ppn = price * 0.11;
-const total = price + ppn;
-
-const ppnFormatted = `Rp ${ppn.toLocaleString('id-ID')}`;
-const totalFormatted = `Rp ${total.toLocaleString('id-ID')}`;
-
 const accordionItems = [
     {
         id: 'detail-paket',
@@ -86,19 +84,16 @@ const accordionItems = [
             <ul class="space-y-3">
                 <li class="flex justify-between">
                     <span>Harga Awal</span>
-                    <span class="font-bold">${priceFormatted}</span>
+                    <span class="font-bold">${basePriceFormatted}</span>
                 </li>
-
                 <li class="flex justify-between">
                     <span>Biaya Layanan</span>
                     <span class="font-bold text-green-600">Gratis</span>
                 </li>
-
                 <li class="flex justify-between">
                     <span>PPN (11%)</span>
                     <span class="font-bold">${ppnFormatted}</span>
                 </li>
-
                 <li class="mt-2 pt-3 border-t border-dashed border-gray-300 dark:border-gray-600 flex justify-between">
                     <span class="font-bold text-lg text-gray-800 dark:text-white">Total</span>
                     <span class="font-bold text-lg text-primary">${totalFormatted}</span>
@@ -107,7 +102,6 @@ const accordionItems = [
         `
     }
 ];
-
 ---
 
 <Layout title={`${product.product_name} - Paketin`}>
@@ -124,7 +118,7 @@ const accordionItems = [
                     <ProductInfo 
                         product={product}
                         badgeClass={badgeClass}
-                        priceFormatted={priceFormatted}
+                        priceFormatted={basePriceFormatted} 
                     />
                 </div>
 
@@ -133,7 +127,8 @@ const accordionItems = [
                     
                     <ProductPriceBox 
                         productId={product.id}
-                        priceFormatted={priceFormatted}
+                        totalFormatted={totalFormatted}
+                        totalPrice={totalPrice}
                     />
                 </div>
 
@@ -152,7 +147,7 @@ const accordionItems = [
         id="confirm_buy_modal"
         title="Konfirmasi Pembelian"
         type="info"
-        message={`Apakah Anda yakin ingin membeli <b class="text-gray-900 dark:text-white">${product.product_name}</b> seharga <span class="text-primary font-bold">${priceFormatted}</span>?`}
+        message={`Apakah Anda yakin ingin membeli <b class="text-gray-900 dark:text-white">${product.product_name}</b> dengan total <span class="text-primary font-bold">${totalFormatted}</span>?`}
     />
 
     <Footer />

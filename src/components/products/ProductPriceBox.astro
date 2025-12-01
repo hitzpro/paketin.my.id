@@ -50,7 +50,8 @@ const { productId, totalFormatted, totalPrice } = Astro.props;
                     if (modalConfirmBtn) {
                         const newBtn = modalConfirmBtn.cloneNode(true);
                         modalConfirmBtn.parentNode.replaceChild(newBtn, modalConfirmBtn);
-                        newBtn.addEventListener('click', () => processCheckout(user.id, productId));
+                        newBtn.addEventListener('click', () => processCheckout(user.id, productId, totalPrice));
+
                     }
                     window['openModal_confirm_buy_modal']();
                 } 
@@ -63,7 +64,7 @@ const { productId, totalFormatted, totalPrice } = Astro.props;
             });
         }
 
-        async function processCheckout(userId, productId) {
+        async function processCheckout(userId, productId, finalPrice) {
             const btnBuy = document.getElementById('btn-buy-now');
             const originalText = btnBuy.innerHTML;
             btnBuy.innerHTML = '<span class="loading loading-spinner"></span> Memproses...';
@@ -77,7 +78,7 @@ const { productId, totalFormatted, totalPrice } = Astro.props;
                         user_id: userId,
                         product_id: productId,
                         quantity: 1,
-                        final_price: totalPrice
+                        final_price: finalPrice
                     })
                 });
 
