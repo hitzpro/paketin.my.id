@@ -1,0 +1,83 @@
+---
+// src/components/ui/Navbar.astro
+import Modal from './Modal.astro';
+---
+
+<div class="navbar hidden md:flex fixed top-0 z-50 w-full h-[70px] items-center justify-between px-4 lg:px-8 
+            bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm 
+            border-b border-transparent dark:border-gray-800 
+            transition-colors duration-300">
+    
+    <!-- LEFT : LOGO + NAME -->
+    <div class="flex items-center">
+        <a class="btn btn-ghost text-xl font-bold text-blue-600 dark:text-blue-400 p-0 hover:bg-transparent gap-2" href="/">
+            <img src="/images/icon-512.png?v=2" alt="Paketin" class="w-7 h-7" />
+            <span>Paketin</span>
+        </a>
+        
+    </div>
+
+    <!-- CENTER MENU -->
+    <div class="hidden lg:flex">
+        <ul class="menu menu-horizontal px-1 font-medium text-gray-600 dark:text-gray-300 gap-6">
+            <li><a href="/" class="hover:text-blue-600 dark:hover:text-blue-400 hover:bg-transparent">Beranda</a></li>
+            <li><a href="/products" class="hover:text-blue-600 dark:hover:text-blue-400 hover:bg-transparent">Beli Paket</a></li>
+        </ul>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="flex items-center gap-3">
+        
+        <!-- ACCESSIBILITY -->
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800" title="Tampilan & Aksesibilitas">
+                <i class="fa-solid fa-universal-access text-xl"></i>
+            </div>
+            
+            <div tabindex="0" class="dropdown-content z-[1] card card-compact w-64 p-2 shadow-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-gray-700 mt-3 rounded-xl">
+                <div class="card-body">
+                    <h3 class="card-title text-xs font-bold border-b border-gray-100 dark:border-gray-700 pb-2 mb-2 text-gray-400 uppercase tracking-wider">
+                        Tampilan
+                    </h3>
+                    
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-medium"><i class="fa-solid fa-font mr-2"></i>Ukuran Teks</span>
+                        <div class="join border border-gray-200 dark:border-gray-600 rounded-lg">
+                            <button class="join-item btn btn-xs bg-transparent border-none hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 nav-font-btn" data-size="small">A-</button>
+                            <button class="join-item btn btn-xs bg-transparent border-none hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 nav-font-btn" data-size="medium">A</button>
+                            <button class="join-item btn btn-xs bg-transparent border-none hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 nav-font-btn" data-size="large">A+</button>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-medium"><i class="fa-solid fa-moon mr-2"></i>Mode Gelap</span>
+                        <input type="checkbox" id="nav-toggle-darkmode" class="toggle toggle-xs toggle-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BELL ICON (NOTIFIKASI) -->
+        <a 
+            href="/notifikasi"
+            class="btn btn-ghost btn-circle text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+            aria-label="Notifikasi"
+            title="Notifikasi"
+        >
+            <i class="fa-regular fa-bell text-lg"></i>
+        </a>
+
+        <!-- AUTH SECTION -->
+        <div id="navbar-auth-section">
+            <div class="w-24 h-9 bg-gray-100 dark:bg-gray-800 rounded-full animate-pulse border border-gray-200 dark:border-gray-700"></div>
+        </div>
+
+    </div>
+</div>
+
+<div class="hidden md:block h-[70px]"></div>
+
+<script>
+    import { initNavbar } from '../../scripts/ui/navbar.js';
+    document.addEventListener('astro:page-load', initNavbar);
+</script>

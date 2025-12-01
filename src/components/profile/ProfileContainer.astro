@@ -1,0 +1,20 @@
+---
+// Props:
+// - title: string
+const { title } = Astro.props;
+---
+
+<div class="bg-white dark:bg-gray-800 rounded-2xl p-6 md:p-8 
+            border border-gray-100 dark:border-gray-700
+            shadow-sm transition-colors duration-300">
+    
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-800 dark:text-white">
+            {title}
+        </h2>
+
+        <slot name="header-actions" />
+    </div>
+
+    <slot />
+</div>

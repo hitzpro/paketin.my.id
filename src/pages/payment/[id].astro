@@ -1,0 +1,74 @@
+---
+// src/pages/payment/[id].astro
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro';
+import QRCodeDisplay from '../../components/payment/QRCodeDisplay.astro';
+import CountdownTimer from '../../components/payment/CountdownTimer.astro';
+import PaymentSuccess from '../../components/payment/PaymentSuccess.astro';
+import PaymentFailed from '../../components/payment/PaymentFailed.astro';
+import { API_BASE_URL } from '../../config'; // Import Config untuk SSR Fetch
+
+const { id } = Astro.params;
+
+let transaction = null;
+let formattedPrice = "Rp 0";
+
+try {
+    // Fetch Server Side (SSR)
+    // Gunakan 127.0.0.1 langsung atau config jika mendukung SSR
+    const res = await fetch(`http://127.0.0.1:3200/payment/status/${id}`);
+    if (res.ok) {
+        transaction = await res.json();
+        formattedPrice = `Rp ${Number(transaction.total_price).toLocaleString('id-ID')}`;
+    }
+} catch (e) {
+    console.error("SSR Error:", e);
+}
+
+if (!transaction) return Astro.redirect('/404');
+
+// Jika sudah dibayar saat load awal, langsung redirect atau tampilkan sukses
+// Tapi logic render di bawah akan menangani state awalnya
+---
+
+<Layout title={`Pembayaran #${transaction.checkout_id} - Paketin`}>
+    <div class="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4 font-inter transition-colors duration-300">
+        
+        <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700 relative overflow-hidden transition-colors duration-300">
+            
+            <div id="payment-header" class={`text-center mb-6 ${transaction.is_paid ? 'hidden' : ''}`}>
+                <h1 class="text-xl font-bold text-gray-800 dark:text-white transition-colors">Selesaikan Pembayaran</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">ID Transaksi: #{transaction.checkout_id}</p>
+            </div>
+
+            <div id="payment-active" class={transaction.is_paid ? 'hidden' : ''}>
+                <div class="flex justify-center">
+                    <CountdownTimer />
+                </div>
+
+                <QRCodeDisplay checkoutId={transaction.checkout_id} price={formattedPrice} />
+            </div>
+
+            <div id="state-success" class={transaction.is_paid ? 'flex flex-col items-center justify-center text-center py-10 animate-in zoom-in duration-300' : 'hidden flex-col items-center justify-center text-center py-10 animate-in zoom-in duration-300'}>
+                <PaymentSuccess />
+            </div>
+            
+            <div id="state-failed" class="hidden flex-col items-center justify-center text-center py-10 animate-in zoom-in duration-300">
+                <PaymentFailed />
+            </div>
+
+        </div>
+    </div>
+</Layout>
+
+<script define:vars={{ checkoutId: transaction.checkout_id, isPaid: transaction.is_paid }}>
+    import { initPaymentPage } from '../../scripts/pages/payment.js';
+
+    document.addEventListener('astro:page-load', () => {
+        // Hanya jalankan polling jika belum lunas
+        if (!isPaid) {
+            initPaymentPage(checkoutId);
+        }
+    });
+</script>

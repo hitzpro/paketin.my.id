@@ -1,0 +1,25 @@
+---
+// src/components/Toast.astro
+---
+
+<div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
+<template id="toast-template">
+    <div class="flex items-center w-full max-w-xs p-4 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 pointer-events-auto transition-all duration-300 transform translate-x-full opacity-0 bg-white dark:bg-gray-800" role="alert">
+        
+        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg toast-icon-bg">
+            <i class="fa-solid text-lg toast-icon"></i>
+        </div>
+        
+        <div class="ms-3 text-sm font-medium toast-message text-gray-800 dark:text-gray-200"></div>
+        
+        <button type="button" class="ms-auto -mx-1.5 -my-1.5 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 inline-flex items-center justify-center h-8 w-8 text-gray-400 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white transition-colors toast-close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+</template>
+
+<script>
+  // Import script agar tereksekusi dan fungsi showToast terdaftar di window
+  import '../../scripts/ui/toast.js';
+</script>

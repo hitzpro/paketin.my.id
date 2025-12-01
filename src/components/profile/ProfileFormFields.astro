@@ -1,0 +1,48 @@
+---
+// src/components/profile/ProfileFormFields.astro
+---
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+        <label for="input-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Lengkap</label>
+        <input 
+            type="text" 
+            id="input-name" 
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" 
+            placeholder="Nama Anda" 
+            disabled
+        >
+    </div>
+
+    <div>
+        <label for="input-email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+        <input 
+            type="email" 
+            id="input-email" 
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" 
+            placeholder="email@contoh.com" 
+            disabled
+        >
+    </div>
+
+    <div>
+        <label for="input-phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nomor HP</label>
+        <input 
+            type="tel" 
+            id="input-phone" 
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" 
+            placeholder="0812..." 
+            disabled
+        >
+    </div>
+
+    <div>
+        <label for="input-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password Baru (Opsional)</label>
+        <input 
+            type="password" 
+            id="input-password" 
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" 
+            placeholder="Ketik untuk mengubah password" 
+            disabled
+        >
+    </div>
+</div>

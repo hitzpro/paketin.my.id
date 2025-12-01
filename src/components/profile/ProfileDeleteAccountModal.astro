@@ -1,0 +1,26 @@
+---
+// src/components/profile/ProfileDeleteAccountModal.astro
+---
+
+<div id="delete_account_modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center w-full h-full bg-black/70 backdrop-blur-sm p-4">
+  <div class="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-6 animate-in zoom-in-95 duration-200">
+
+    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Yakin hapus akun?</h3>
+    
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+      Untuk konfirmasi, silakan ketik nama pengguna Anda: <br>
+      <span id="delete-username-hint" class="font-bold text-gray-800 dark:text-gray-200 select-all bg-gray-100 dark:bg-gray-700 px-2 py-1 mt-1 inline-block rounded border border-gray-200 dark:border-gray-600"></span>
+    </p>
+
+    <input type="text" id="delete-confirm-input" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none mb-6 text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white" placeholder="Ketik nama pengguna di sini...">
+
+    <div class="flex justify-end gap-3">
+      <button id="btn-cancel-delete" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition-colors">Batal</button>
+      
+      <button id="btn-confirm-delete" class="px-4 py-2 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors" disabled>
+          Hapus Permanen
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,91 @@
+---
+// src/components/ui/Bottom-Nav.astro
+const currentPath = Astro.url.pathname;
+
+// Helper function sederhana untuk class conditional (Server Side Rendering Only)
+const linkClass = (path) => 
+    currentPath === path 
+        ? 'text-blue-600 dark:text-blue-400' 
+        : 'text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400';
+---
+
+<div class="fixed bottom-24 right-4 z-40 md:hidden group">
+    <button id="fab-trigger" 
+            class="flex items-center justify-center w-12 h-12 rounded-full 
+                   bg-gray-800/80 dark:bg-white/90 text-white dark:text-gray-900 
+                   shadow-xl backdrop-blur-sm border border-white/20 dark:border-gray-300
+                   opacity-50 group-hover:opacity-100 group-active:opacity-100 focus:opacity-100
+                   transition-all duration-300 ease-out transform group-hover:scale-110 active:scale-95"
+            aria-label="Pengaturan Tampilan">
+        <i class="fa-solid fa-universal-access text-lg"></i>
+    </button>
+
+    <div id="fab-menu" 
+         class="absolute bottom-14 right-0 w-48 p-3 rounded-2xl 
+                bg-white/95 dark:bg-gray-800/95 backdrop-blur-md shadow-2xl 
+                border border-gray-100 dark:border-gray-700
+                transform scale-90 opacity-0 pointer-events-none translate-y-4
+                transition-all duration-300 origin-bottom-right">
+        
+        <h4 class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 px-1">Tampilan</h4>
+
+        <div class="flex justify-between items-center mb-4 px-1">
+            <span class="text-xs font-medium text-gray-700 dark:text-gray-300"><i class="fa-solid fa-font mr-2"></i>Ukuran</span>
+            <div class="join border border-gray-200 dark:border-gray-600 rounded-lg shadow-sm">
+                <button class="join-item btn btn-xs px-2 bg-white dark:bg-gray-700 border-none hover:bg-gray-100 dark:hover:bg-gray-600 fab-font-btn" data-size="small">A-</button>
+                <button class="join-item btn btn-xs px-2 bg-white dark:bg-gray-700 border-none hover:bg-gray-100 dark:hover:bg-gray-600 fab-font-btn" data-size="medium">A</button>
+                <button class="join-item btn btn-xs px-2 bg-white dark:bg-gray-700 border-none hover:bg-gray-100 dark:hover:bg-gray-600 fab-font-btn" data-size="large">A+</button>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center px-1">
+            <span class="text-xs font-medium text-gray-700 dark:text-gray-300"><i class="fa-solid fa-moon mr-2"></i>Gelap</span>
+            <input type="checkbox" id="fab-toggle-darkmode" class="toggle toggle-xs toggle-primary" />
+        </div>
+    </div>
+</div>
+
+<nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-md 
+            bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg 
+            border border-gray-200 dark:border-gray-700 
+            rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] h-16 z-50 md:hidden 
+            transition-colors duration-300">
+            
+    <div class="grid h-full grid-cols-5 mx-auto">
+        
+        <a href="/" class="inline-flex flex-col items-center justify-center px-5 rounded-s-full group hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <i class={`fa-solid fa-house text-xl mb-1 transition-all duration-200 ${linkClass('/')}`}></i>
+            <span class="sr-only">Beranda</span> 
+        </a>
+
+        <a href="/tentang" class="inline-flex flex-col items-center justify-center px-5 group hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <i class={`fa-solid fa-circle-info text-xl mb-1 transition-all duration-200 ${linkClass('/tentang')}`}></i>
+            <span class="sr-only">Tentang</span>
+        </a>
+
+        <div class="flex items-center justify-center">
+            <a href="/products" class="inline-flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 hover:scale-105 transition-all duration-200 active:scale-95">
+                <i class="fa-solid fa-cart-shopping text-lg"></i>
+                <span class="sr-only">Beli</span>
+            </a>
+        </div>
+
+        <a href="/kontak" class="inline-flex flex-col items-center justify-center px-5 group hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <i class={`fa-solid fa-headset text-xl mb-1 transition-all duration-200 ${linkClass('/kontak')}`}></i>
+            <span class="sr-only">Bantuan</span>
+        </a>
+
+        <a id="nav-auth-link" href="/auth/login" class="inline-flex flex-col items-center justify-center px-5 rounded-e-full group hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <i id="nav-auth-icon" class={`fa-solid fa-right-to-bracket text-xl mb-1 transition-all duration-200 ${linkClass('/login')}`}></i>
+            <span id="nav-auth-text" class="sr-only">Masuk</span>
+        </a>
+    </div>
+</nav>
+
+<script>
+  import { initBottomNav } from '../../scripts/ui/bottom-nav.js';
+  
+  document.addEventListener('astro:page-load', () => {
+      initBottomNav();
+  });
+</script>

@@ -1,0 +1,116 @@
+---
+const { productId, priceFormatted } = Astro.props;
+---
+
+<div class="bg-slate-50 dark:bg-gray-800/50 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 text-center sticky top-24">
+    <p class="text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider font-semibold mb-1">
+        Total Pembayaran
+    </p>
+
+    <h3 class="text-2xl md:text-3xl font-black text-gray-800 dark:text-white mb-6">
+        {priceFormatted}
+    </h3>
+
+    <button 
+        id="btn-buy-now"
+        class="w-full btn btn-primary border-none text-white font-bold py-3.5 rounded-xl hover:brightness-110 active:scale-[0.98] transition-all duration-200 text-base"
+        data-product-id={productId}
+    >
+        Bayar Sekarang
+        <i class="fa-solid fa-arrow-right ml-2"></i>
+    </button>
+
+    <div class="mt-4 flex items-center justify-center gap-1.5 opacity-60">
+        <i class="fa-solid fa-shield-halved text-green-600 dark:text-green-400 text-xs"></i>
+        <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Garansi uang kembali</span>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const btnBuy = document.getElementById('btn-buy-now');
+        const API_URL = 'http://localhost:3200'; // Pastikan URL benar
+
+        if (btnBuy) {
+            btnBuy.addEventListener('click', async () => {
+                // 1. Cek Login Dulu (Wajib)
+                const userStr = localStorage.getItem('paketin_user');
+                if (!userStr) {
+                    alert("Silakan login terlebih dahulu untuk membeli paket.");
+                    window.location.href = '/auth/login';
+                    return;
+                }
+
+                const user = JSON.parse(userStr);
+                const productId = btnBuy.getAttribute('data-product-id');
+
+                // 2. Tampilkan Konfirmasi (Bisa pakai Modal atau Confirm biasa)
+                // Untuk simpelnya kita pakai confirm browser dulu, 
+                // atau panggil modal global jika Anda sudah setup window.openModal...
+                
+                // OPSI A: Pakai Modal Global (jika ada di Layout)
+                if (typeof window['openModal_confirm_buy_modal'] === 'function') {
+                    // Attach logic ke tombol "Ya, Beli" di dalam modal itu
+                    const modalConfirmBtn = document.getElementById('confirm_buy_modal-confirm-btn');
+                    if (modalConfirmBtn) {
+                        // Clone node to clear old listeners
+                        const newBtn = modalConfirmBtn.cloneNode(true);
+                        modalConfirmBtn.parentNode.replaceChild(newBtn, modalConfirmBtn);
+                        
+                        newBtn.addEventListener('click', () => processCheckout(user.id, productId));
+                    }
+                    window['openModal_confirm_buy_modal']();
+                } 
+                // OPSI B: Fallback (Langsung beli)
+                else {
+                    if (confirm("Lanjutkan ke pembayaran?")) {
+                        processCheckout(user.id, productId);
+                    }
+                }
+            });
+        }
+
+        async function processCheckout(userId, productId) {
+            const btnBuy = document.getElementById('btn-buy-now');
+            const originalText = btnBuy.innerHTML;
+            
+            // Loading State
+            btnBuy.innerHTML = '<span class="loading loading-spinner"></span> Memproses...';
+            btnBuy.disabled = true;
+
+            try {
+                // 3. Request Create Transaction
+                const response = await fetch(`${API_URL}/checkout/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        product_id: productId,
+                        quantity: 1
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // 4. Redirect ke Halaman Pembayaran
+                    if (typeof window.showToast === 'function') window.showToast('Tagihan dibuat!', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = `/payment/${result.checkout_id}`;
+                    }, 500);
+                } else {
+                    alert('Gagal: ' + result.message);
+                    btnBuy.innerHTML = originalText;
+                    btnBuy.disabled = false;
+                }
+
+            } catch (error) {
+                console.error("Checkout Error:", error);
+                alert("Gagal menghubungi server.");
+                btnBuy.innerHTML = originalText;
+                btnBuy.disabled = false;
+            }
+        }
+    });
+</script>

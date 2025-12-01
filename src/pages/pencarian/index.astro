@@ -1,0 +1,52 @@
+---
+// src/pages/pencarian.astro (atau search.astro)
+// SSR mode untuk menangkap query params search
+export const prerender = false; 
+
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/ui/Navbar.astro';
+import Footer from '../../components/ui/Footer.astro';
+import BottomNav from '../../components/ui/Bottom-Nav.astro';
+import ProductList from '../../components/products/ProductList.astro';
+
+// 1. IMPORT CONFIG (Agar URL Dinamis)
+import { API_BASE_URL } from '../../config';
+
+const query = Astro.url.searchParams.get('q') || '';
+
+// 2. Fetch Semua Produk (Gunakan Variable Config)
+let products = [];
+try {
+    // Gunakan API_BASE_URL dari config, bukan localhost hardcode
+    const res = await fetch(`${API_BASE_URL}/products`);
+    const json = await res.json();
+    products = json.data || [];
+} catch (e) {
+    console.error("Error fetching products", e);
+}
+---
+
+<Layout title={`Pencarian: ${query} - Paketin`}>
+    <Navbar />
+
+    <main class="pb-24 min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <div class="container mx-auto px-4 pt-8">
+            
+            <div class="mb-8">
+                <a href="/" class="text-xs text-gray-500 dark:text-gray-400 hover:underline mb-2 inline-block">
+                    <i class="fa-solid fa-house mr-1"></i> Beranda
+                </a>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
+                    Hasil Pencarian: "<span class="text-blue-600 dark:text-blue-400">{query}</span>"
+                </h1>
+                <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Menemukan hasil yang relevan untukmu.</p>
+            </div>
+
+            <ProductList initialProducts={products} initialQuery={query} initialCategory="all" />
+
+        </div>
+    </main>
+
+    <Footer />
+    <BottomNav />
+</Layout>

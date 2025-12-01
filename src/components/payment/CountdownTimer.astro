@@ -1,0 +1,28 @@
+<div class="bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 px-4 py-2 rounded-lg font-mono font-bold text-xl flex items-center gap-2 mb-6 border border-orange-200 dark:border-orange-800/50 transition-colors duration-300">
+    <i class="fa-regular fa-clock animate-pulse"></i>
+    <span id="timer-display">05:00</span>
+</div>
+
+<script>
+    // Logic Timer (tetap sama)
+    window.startTimer = (durationInSeconds, onTimeout) => {
+        let timer = durationInSeconds;
+        const display = document.querySelector('#timer-display');
+        
+        const interval = setInterval(() => {
+            const minutes = Math.floor(timer / 60);
+            const seconds = timer % 60;
+
+            if (display) {
+                display.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            }
+
+            if (--timer < 0) {
+                clearInterval(interval);
+                if (onTimeout) onTimeout();
+            }
+        }, 1000);
+
+        return interval; 
+    };
+</script>

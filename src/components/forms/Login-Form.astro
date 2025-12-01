@@ -1,0 +1,101 @@
+---
+// src/components/forms/Login-Form.astro
+---
+
+<form id="login-form" class="w-full max-w-[380px] mx-auto flex flex-col gap-5">
+  
+  <div>
+     <label for="login-identity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+       No. Telepon
+     </label>
+     <div class="flex">
+       <span class="inline-flex items-center px-3 text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-700 border border-r-0 border-gray-300 dark:border-slate-600 rounded-l-lg">
+          <i class="fa-solid fa-user w-4 h-4"></i>
+       </span>
+       <input 
+         type="text" 
+         id="login-identity" 
+         name="phone_number"
+         class="rounded-none rounded-r-lg bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5 outline-none placeholder-gray-400 dark:placeholder-gray-500" 
+         placeholder="Contoh: 08123456789"
+         required
+       >
+     </div>
+  </div>
+
+  <div>
+     <label for="login-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+       Password
+     </label>
+     
+     <div class="flex">
+       <span class="inline-flex items-center px-3 text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-700 border border-r-0 border-gray-300 dark:border-slate-600 rounded-l-lg">
+          <i class="fa-solid fa-lock w-4 h-4"></i>
+       </span>
+       
+       <div class="relative w-full">
+          <input 
+            type="password" 
+            id="login-password" 
+            name="password"
+            class="rounded-none rounded-r-lg bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5 pr-10 outline-none placeholder-gray-400 dark:placeholder-gray-500" 
+            placeholder="••••••••"
+            required
+          >
+          
+          <button 
+            type="button" 
+            id="toggle-password"
+            class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10"
+          >
+            <i class="fa-solid fa-eye" id="eye-icon"></i>
+          </button>
+       </div>
+     </div>
+     
+     <div class="flex justify-end mt-1">
+        <a href="/auth/lupa-password" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Lupa Password?</a>
+     </div>
+  </div>
+
+  <div class="pt-1">
+      <button 
+        type="submit" 
+        id="btn-login-submit"
+        class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center shadow-md transition-all active:scale-[0.98]"
+      >
+        Masuk Sekarang
+      </button>
+
+      <button 
+        type="button" 
+        id="btn-login-loading" 
+        class="w-full hidden text-white bg-blue-400 font-medium rounded-lg text-sm px-5 py-3 text-center cursor-not-allowed items-center justify-center gap-2" 
+        disabled
+      >
+          <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Loading...
+      </button>
+  </div>
+
+  <div class="text-center">
+    <p class="text-sm text-slate-600 dark:text-slate-400">
+      Belum punya akun? 
+      <a href="/auth/register" class="font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors hover:underline">
+        Daftar disini
+      </a>
+    </p>
+  </div>
+
+</form>
+
+<script>
+import { initLoginForm } from '../../scripts/auth/login.js';
+
+document.addEventListener('astro:page-load', () => {
+    initLoginForm();
+});
+</script>

@@ -1,0 +1,75 @@
+<!-- Floating Alert -->
+<div id="payment-alert" class="hidden fixed top-20 right-4 z-50 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-l-4 border-l-orange-500 border-gray-200 dark:border-gray-700 p-4 animate-in slide-in-from-right duration-500 cursor-pointer hover:scale-105 transition-transform">
+    <div class="flex justify-between items-start">
+        <div class="flex gap-3">
+            <div class="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg h-fit">
+                <i class="fa-solid fa-clock text-orange-600 dark:text-orange-400"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-gray-800 dark:text-white text-sm">Menunggu Pembayaran</h4>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Selesaikan sebelum waktu habis!</p>
+                <span id="alert-countdown" class="text-orange-600 font-mono font-bold text-sm mt-1 block">05:00</span>
+            </div>
+        </div>
+        <button id="btn-close-alert" class="text-gray-400 hover:text-gray-600">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const alertEl = document.getElementById('payment-alert');
+        const alertTimer = document.getElementById('alert-countdown');
+        const closeBtn = document.getElementById('btn-close-alert');
+
+        // Cek LocalStorage
+        const pendingTx = localStorage.getItem('pending_transaction');
+        
+        if (pendingTx && alertEl && alertTimer) {
+            const { id, expiry } = JSON.parse(pendingTx);
+            const now = Date.now();
+            const timeLeft = Math.floor((expiry - now) / 1000);
+
+            // Jika waktu masih ada dan kita BUKAN di halaman payment itu sendiri
+            if (timeLeft > 0 && !window.location.pathname.includes(`/payment/${id}`)) {
+                alertEl.classList.remove('hidden');
+                
+                // Klik alert arahkan ke payment
+                alertEl.onclick = (e) => {
+                    // Jangan redirect kalau klik tombol close
+                    if (!(e.target as HTMLElement).closest('#btn-close-alert')) {
+                        window.location.href = `/payment/${id}`;
+                    }
+                };
+
+                // Logic Timer Kecil di Alert
+                const interval = setInterval(() => {
+                    const currentNow = Date.now();
+                    const currentLeft = Math.floor((expiry - currentNow) / 1000);
+                    
+                    if (currentLeft <= 0) {
+                        clearInterval(interval);
+                        alertEl.classList.add('hidden');
+                        localStorage.removeItem('pending_transaction');
+                    } else {
+                        const m = Math.floor(currentLeft / 60);
+                        const s = currentLeft % 60;
+                        alertTimer.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+                    }
+                }, 1000);
+            } else {
+                // Expired atau sedang di halaman payment
+                localStorage.removeItem('pending_transaction');
+            }
+        }
+
+        if (closeBtn && alertEl) {
+            closeBtn.onclick = () => {
+                alertEl.classList.add('hidden');
+                // Opsional: Jangan hapus localStorage agar muncul lagi pas refresh, atau hapus permanen
+                // localStorage.removeItem('pending_transaction'); 
+            }
+        }
+    });
+</script>

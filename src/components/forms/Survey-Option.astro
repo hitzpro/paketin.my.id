@@ -1,0 +1,51 @@
+---
+interface Props {
+  value: string;
+  label: string;
+  icon?: string;
+  name: string;
+  inputType?: "radio" | "checkbox"; 
+}
+
+const { value, label, icon, name, inputType = "radio" } = Astro.props;
+---
+
+<label class="cursor-pointer group relative h-full block">
+  <input type={inputType} name={name} value={value} class="peer sr-only" />
+  
+  <div class="flex flex-col items-center justify-center p-4 h-full w-full 
+              bg-white dark:bg-slate-800 
+              border-2 border-slate-200 dark:border-slate-700 
+              rounded-2xl transition-all duration-200 
+              hover:border-blue-300 dark:hover:border-blue-500 hover:bg-slate-50 dark:hover:bg-slate-700
+              hover:shadow-sm
+              
+              /* State Checked */
+              peer-checked:border-blue-600 dark:peer-checked:border-blue-500
+              peer-checked:bg-blue-50/50 dark:peer-checked:bg-blue-900/20
+              peer-checked:shadow-md 
+              peer-checked:ring-1 peer-checked:ring-blue-600/50">
+    
+    {icon && (
+      <div class="mb-3 text-3xl transition-colors duration-200
+                  text-slate-400 dark:text-slate-500
+                  group-hover:text-blue-500 dark:group-hover:text-blue-400
+                  peer-checked:text-blue-600 dark:peer-checked:text-blue-400">
+        <i class={icon}></i>
+      </div>
+    )}
+    
+    <span class="text-sm font-bold text-center leading-snug transition-colors
+                 text-slate-600 dark:text-slate-300
+                 group-hover:text-slate-900 dark:group-hover:text-white
+                 peer-checked:text-blue-800 dark:peer-checked:text-blue-300">
+      {label}
+    </span>
+    
+    <div class="absolute top-3 right-3 opacity-0 transform scale-75 transition-all duration-200
+                peer-checked:opacity-100 peer-checked:scale-100 
+                text-blue-600 dark:text-blue-400">
+      <i class="fa-solid fa-circle-check text-xl bg-white dark:bg-slate-800 rounded-full"></i>
+    </div>
+  </div>
+</label>

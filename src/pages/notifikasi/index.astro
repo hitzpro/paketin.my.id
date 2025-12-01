@@ -1,0 +1,80 @@
+---
+// src/pages/notifikasi/index.astro
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/ui/Navbar.astro';
+import BottomNav from '../../components/ui/Bottom-Nav.astro';
+import Modal from '../../components/ui/Modal.astro'; 
+
+---
+
+<Layout title="Notifikasi Saya">
+    <Navbar />
+
+    <main class="pt-5 pb-28 min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <div class="container mx-auto px-4">
+
+            <div class="max-w-lg mx-auto mb-8 flex justify-between items-end border-b border-gray-200 dark:border-gray-700 pb-4">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-gray-800 dark:text-white tracking-tight">Notifikasi</h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Update terbaru aktivitas Anda.</p>
+                </div>
+                <button id="refresh-btn" class="btn btn-ghost btn-sm btn-circle text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors" title="Segarkan">
+                    <i class="fa-solid fa-rotate-right text-lg"></i>
+                </button>
+            </div>
+
+            <div class="max-w-lg mx-auto relative min-h-[300px]">
+                
+                <div id="loading-skeleton" class="animate-pulse space-y-6">
+                    <div class="h-4 bg-gray-200 dark:bg-gray-700 w-24 rounded mb-2"></div>
+                    <div class="flex gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
+                        <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                        <div class="flex-1 space-y-2">
+                            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                            <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
+                        <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                        <div class="flex-1 space-y-2">
+                            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                            <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="notification-container" class="space-y-6 hidden"></div>
+
+                <div class="text-center mt-8">
+                    <button id="btn-load-more" class="hidden btn btn-sm btn-outline border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full px-6 transition-all">
+                        Muat Lebih Banyak
+                    </button>
+                </div>
+                
+                <div id="empty-state" class="hidden flex flex-col items-center justify-center py-12 text-center">
+                    <div class="w-20 h-20 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-4 animate-in zoom-in duration-300">
+                        <i class="fa-regular fa-bell-slash text-3xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white">Belum ada notifikasi</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-1 max-w-xs">Saat ada pembaruan transaksi atau info akun, akan muncul di sini.</p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+    <Modal 
+        id="delete_notif_modal" 
+        title="Hapus Notifikasi?" 
+        message="Notifikasi ini akan dihapus permanen dari riwayat Anda." 
+    />
+
+    <BottomNav />
+</Layout>
+
+<script>
+  import { initNotificationPage } from '../../scripts/pages/notifications.js';
+  
+  document.addEventListener('astro:page-load', () => {
+      initNotificationPage();
+  });
+</script>

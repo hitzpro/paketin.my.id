@@ -1,0 +1,65 @@
+---
+// src/layouts/Layout.astro
+import '../styles/global.css'; 
+import { ClientRouter } from 'astro:transitions';
+import Toast from '../components/ui/Toast.astro';
+import Modal from '../components/ui/Modal.astro'; 
+import PaymentAlert from '../components/ui/PaymentAlert.astro';
+
+interface Props {
+    title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="id" data-theme="light"> 
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/images/logo.png" />
+        <meta name="generator" content={Astro.generator} />
+        <meta name="theme-color" content="#53629E" />
+        <title>{title}</title>
+        
+        <link rel="manifest" href="/manifest.json" />
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+        <ClientRouter />
+
+        <script>
+            import { initTheme } from '../scripts/core/theme.js';
+
+            // Jalankan segera
+            initTheme();
+
+            // Jalankan lagi saat pindah halaman (Astro View Transitions)
+            document.addEventListener('astro:after-swap', initTheme);
+        </script>
+    </head>
+    
+    <body class="font-inter text-gray-900 dark:text-gray-100 mb-[80px] md:mb-0 antialiased bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+        <slot />
+        <Toast />
+        <PaymentAlert />
+        
+        <Modal 
+            id="logout_modal" 
+            title="Konfirmasi Keluar" 
+            message="Apakah Anda yakin ingin keluar dari akun Anda?" 
+        />
+    
+        <script>
+            import { initGlobalScripts } from '../scripts/core/global.js';
+
+            document.addEventListener('astro:page-load', () => {
+                initGlobalScripts();
+            });
+        </script>
+    </body>
+</html>

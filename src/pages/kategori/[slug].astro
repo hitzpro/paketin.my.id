@@ -1,0 +1,52 @@
+---
+export const prerender = false; // SSR mode untuk menangkap slug dynamic
+
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/ui/Navbar.astro';
+import Footer from '../../components/ui/Footer.astro';
+import BottomNav from '../../components/ui/Bottom-Nav.astro';
+import ProductList from '../../components/products/ProductList.astro';
+
+const { slug } = Astro.params;
+const categoryName = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : 'Kategori';
+
+// 1. Fetch Semua Produk
+let products = [];
+try {
+    const res = await fetch('http://localhost:3200/products');
+    const json = await res.json();
+    products = json.data || [];
+} catch (e) {
+    console.error("Error fetching products", e);
+}
+---
+
+<Layout title={`Kategori ${categoryName} - Paketin`}>
+    <Navbar />
+
+    <main class="pb-24 min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <div class="container mx-auto px-4 pt-8">
+            
+            <!-- Header Kategori dengan Back Button -->
+            <div class="flex items-center gap-4 mb-8">
+                <a href="/products" class="btn btn-circle btn-sm btn-ghost bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Kategori: {categoryName}</h1>
+                        <span class="badge bg-primary text-white border-none">{slug}</span>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Menampilkan semua produk dalam kategori ini.</p>
+                </div>
+            </div>
+
+            <!-- Produk List dengan Filter Kategori yang dikunci secara logic -->
+            <ProductList initialProducts={products} initialCategory={slug} />
+
+        </div>
+    </main>
+
+    <Footer />
+    <BottomNav />
+</Layout>

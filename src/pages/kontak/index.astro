@@ -1,0 +1,118 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/ui/Navbar.astro';
+import Footer from '../../components/ui/Footer.astro';
+import BottomNav from '../../components/ui/Bottom-Nav.astro';
+---
+
+<Layout title="Hubungi Kami - Paketin">
+  <div class="flex flex-col min-h-dvh bg-slate-50 dark:bg-gray-900 transition-colors duration-300">
+
+    <header class="hidden md:block sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
+      <Navbar />
+    </header>
+
+    <main class="flex-grow w-full pb-20 md:pb-0">
+
+      <div class="md:hidden px-6 pt-6 pb-4 flex items-center gap-3 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+        <a href="/" class="text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors">
+          <i class="fa-solid fa-arrow-left text-lg"></i>
+        </a>
+        <h1 class="text-xl font-bold text-gray-800 dark:text-white">Hubungi Kami</h1>
+      </div>
+
+      <div class="container mx-auto px-6 py-8 md:py-16 max-w-6xl">
+
+        <div class="hidden md:block text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white inline-block relative z-10">
+            Hubungi Kami
+            <span class="absolute bottom-2 left-0 w-full h-3 bg-blue-100 dark:bg-blue-900/50 -z-10 transform -rotate-1"></span>
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+          <div class="relative h-[300px] md:h-[500px] rounded-3xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 group">
+            <img 
+              src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop" 
+              alt="Customer Service" 
+              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            >
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+          </div>
+
+          <div>
+            <div class="mb-8">
+              <h3 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-3">
+                Senang bisa membantu Anda!
+              </h3>
+              <p class="text-gray-500 dark:text-gray-400 leading-relaxed">
+                Paketin memberikan solusi terbaik untuk kebutuhan transaksi digital Anda. Jangan ragu untuk menghubungi tim support kami jika Anda memiliki pertanyaan atau kendala teknis.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+
+              <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg transition-all duration-300 group">
+                <div class="flex flex-col items-center text-center">
+                  <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mb-4 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                    <i class="fa-regular fa-clock text-xl"></i>
+                  </div>
+                  <h4 class="font-bold text-gray-800 dark:text-white text-base mb-2">Jam Operasional</h4>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Senin - Jumat</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">08:00 - 17:00 WIB</p>
+                </div>
+              </div>
+
+              <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg transition-all duration-300 group">
+                <div class="flex flex-col items-center text-center">
+                  <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mb-4 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                    <i class="fa-solid fa-location-dot text-xl"></i>
+                  </div>
+                  <h4 class="font-bold text-gray-800 dark:text-white text-base mb-2">Alamat Kantor</h4>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">Jl. Teknologi No. 12</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">Jakarta Selatan, 12345</p>
+                </div>
+              </div>
+
+              <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg transition-all duration-300 group">
+                <div class="flex flex-col items-center text-center">
+                  <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mb-4 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                    <i class="fa-regular fa-envelope text-xl"></i>
+                  </div>
+                  <h4 class="font-bold text-gray-800 dark:text-white text-base mb-2">Email Support</h4>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">help@paketin.id</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">business@paketin.id</p>
+                </div>
+              </div>
+
+              <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-lg transition-all duration-300 group">
+                <div class="flex flex-col items-center text-center">
+                  <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 mb-4 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                    <i class="fa-solid fa-phone-volume text-xl"></i>
+                  </div>
+                  <h4 class="font-bold text-gray-800 dark:text-white text-base mb-2">Hubungi Kami</h4>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">+62 812-3456-7890</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">+62 21-555-0123</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <footer class="hidden md:block mt-auto bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
+      <Footer />
+    </footer>
+
+    <div class="block md:hidden fixed bottom-0 w-full z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      <BottomNav />
+    </div>
+
+  </div>
+</Layout>

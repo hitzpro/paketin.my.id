@@ -1,0 +1,26 @@
+---
+interface Props {
+  checkoutId: string;
+  price: string;
+}
+const { checkoutId, price } = Astro.props;
+const qrValue = `PAKETIN-PAY-${checkoutId}`;
+---
+
+<div class="flex flex-col items-center animate-in fade-in zoom-in duration-300">
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 mb-4">
+        <img 
+            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrValue}`} 
+            alt="Scan QR to Pay"
+            class="w-48 h-48 object-contain"
+        />
+    </div>
+    
+    <p class="text-gray-500 dark:text-gray-400 text-sm mb-2 transition-colors">Scan QRIS di atas dengan aplikasi e-wallet</p>
+    
+    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors">{price}</h3>
+
+    <button id="btn-simulate-scan" class="btn btn-sm btn-outline btn-warning opacity-50 hover:opacity-100 dark:text-warning dark:border-warning">
+        <i class="fa-solid fa-mobile-screen"></i> Simulasikan Scan HP
+    </button>
+</div>

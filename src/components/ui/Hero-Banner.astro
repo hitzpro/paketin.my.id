@@ -1,0 +1,94 @@
+<section class="hero-section w-full group relative">
+    <div 
+        id="heroCarousel" 
+        class="carousel w-full h-[180px] md:h-[320px] rounded-2xl overflow-x-auto overflow-y-hidden shadow-lg scroll-smooth snap-x snap-mandatory bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white"
+    >
+        
+        <div class="carousel-item w-full snap-center bg-teal-600 dark:bg-teal-700 text-white">
+            <div class="flex w-full flex-col items-center justify-center p-6 text-center h-full">
+                <h2 class="mb-2 text-2xl md:text-4xl font-bold">Promo Awal Bulan!</h2>
+                <p class="mb-4 text-sm md:text-lg opacity-90">Diskon 50% Paket Data Telkomsel</p>
+                <button class="btn btn-sm md:btn-md border-none bg-white text-teal-700 hover:bg-gray-100 rounded-full px-6 font-bold shadow-sm">
+                    Lihat Promo
+                </button>
+            </div>
+        </div>
+
+        <div class="carousel-item w-full snap-center bg-slate-700 dark:bg-slate-800 text-white">
+            <div class="flex w-full flex-col items-center justify-center p-6 text-center h-full">
+                <h2 class="mb-2 text-2xl md:text-4xl font-bold">Token Listrik Murah</h2>
+                <p class="mb-4 text-sm md:text-lg opacity-90">Admin cuma Rp 500 perak!</p>
+                <button class="btn btn-sm md:btn-md border-none bg-white text-slate-700 hover:bg-gray-100 rounded-full px-6 font-bold shadow-sm">
+                    Beli Sekarang
+                </button>
+            </div>
+        </div>
+
+        <div class="carousel-item w-full snap-center bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+            <div class="flex w-full flex-col items-center justify-center p-6 text-center h-full">
+                <h2 class="mb-2 text-2xl md:text-4xl font-bold">Member Baru?</h2>
+                <p class="mb-4 text-sm md:text-lg opacity-90">Dapatkan voucher saldo gratis!</p>
+                <button class="btn btn-sm md:btn-md border-none bg-blue-600 text-white hover:bg-blue-700 rounded-full px-6 font-bold shadow-sm">
+                    Daftar Yuk
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2 pointer-events-none">
+        <button id="prevBtn" class="btn btn-circle btn-sm bg-black/30 dark:bg-white/10 border-none text-white hover:bg-black/50 dark:hover:bg-white/20 pointer-events-auto opacity-0 group-hover:opacity-100 transition-opacity">❮</button>
+        <button id="nextBtn" class="btn btn-circle btn-sm bg-black/30 dark:bg-white/10 border-none text-white hover:bg-black/50 dark:hover:bg-white/20 pointer-events-auto opacity-0 group-hover:opacity-100 transition-opacity">❯</button>
+    </div>
+
+    <script>
+        // Gunakan pembungkus agar variabel tidak bocor ke global scope (opsional tapi disarankan di Astro)
+        (function() {
+            const carousel = document.getElementById('heroCarousel');
+            
+            if (carousel) {
+                let intervalId; 
+
+                const startAutoSlide = () => {
+                    // Clear interval lama dulu untuk keamanan
+                    clearInterval(intervalId);
+                    intervalId = setInterval(() => {
+                        // Cek apakah carousel masih ada di DOM (penting untuk SPA/Astro transitions)
+                        if (!document.body.contains(carousel)) {
+                            clearInterval(intervalId);
+                            return;
+                        }
+
+                        const slideWidth = carousel.clientWidth;
+                        // Logika scroll loop
+                        if (carousel.scrollLeft + slideWidth >= carousel.scrollWidth - 10) { 
+                            carousel.scrollTo({ left: 0, behavior: 'smooth' });
+                        } else {
+                            carousel.scrollBy({ left: slideWidth, behavior: 'smooth' });
+                        }
+                    }, 4000);
+                };
+
+                // Jalankan slider
+                startAutoSlide();
+
+                // Event Listeners dengan arrow function sederhana
+                carousel.addEventListener('mouseenter', () => clearInterval(intervalId));
+                carousel.addEventListener('mouseleave', startAutoSlide);
+                carousel.addEventListener('touchstart', () => clearInterval(intervalId), { passive: true });
+                carousel.addEventListener('touchend', startAutoSlide);
+                
+                // Gunakan Optional Chaining (?.) untuk keamanan jika element tidak ditemukan
+                document.getElementById('nextBtn')?.addEventListener('click', () => {
+                    startAutoSlide(); // Reset timer saat diklik manual
+                    carousel.scrollBy({ left: carousel.clientWidth, behavior: 'smooth' });
+                });
+                
+                document.getElementById('prevBtn')?.addEventListener('click', () => {
+                    startAutoSlide(); // Reset timer saat diklik manual
+                    carousel.scrollBy({ left: -carousel.clientWidth, behavior: 'smooth' });
+                });
+            }
+        })();
+    </script>
+</section>

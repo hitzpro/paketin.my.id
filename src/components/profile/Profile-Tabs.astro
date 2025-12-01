@@ -1,0 +1,48 @@
+---
+// src/components/Profile-Tabs.astro
+---
+
+<div class="mb-6">
+    <div class="border-b border-gray-200 dark:border-gray-700">
+        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400" id="profile-tabs" role="tablist">
+            
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 border-blue-600 text-blue-600 rounded-t-lg active-tab transition-colors" id="tab-profile" data-tabs-target="#content-profile" type="button" role="tab">
+                    <i class="fa-solid fa-user mr-2"></i>Profil
+                </button>
+            </li>
+
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 border-transparent hover:text-gray-600 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 rounded-t-lg inactive-tab transition-colors" id="tab-history" data-tabs-target="#content-history" type="button" role="tab">
+                    <i class="fa-solid fa-clock-rotate-left mr-2"></i>Riwayat
+                </button>
+            </li>
+
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 border-transparent hover:text-gray-600 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 rounded-t-lg inactive-tab transition-colors" id="tab-favorites" data-tabs-target="#content-favorites" type="button" role="tab">
+                    <i class="fa-solid fa-heart mr-2"></i>Favorit
+                </button>
+            </li>
+
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 border-transparent hover:text-gray-600 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 rounded-t-lg inactive-tab transition-colors" id="tab-settings" data-tabs-target="#content-settings" type="button" role="tab">
+                    <i class="fa-solid fa-gear mr-2"></i>Pengaturan
+                </button>
+            </li>
+
+            <li role="presentation">
+                <button class="inline-block p-4 border-b-2 border-transparent text-red-500 hover:text-red-700 dark:hover:text-red-400 hover:border-red-300 dark:hover:border-red-500 rounded-t-lg transition-colors" id="tab-logout" type="button">
+                    <i class="fa-solid fa-right-from-bracket mr-2"></i>Keluar
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+  import { initProfileTabs } from '../../scripts/profiles/tabs.js';
+  
+  document.addEventListener('astro:page-load', () => {
+      initProfileTabs();
+  });
+</script>

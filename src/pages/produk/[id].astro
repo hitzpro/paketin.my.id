@@ -1,0 +1,138 @@
+---
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/ui/Navbar.astro';
+import Footer from '../../components/ui/Footer.astro';
+import BottomNav from '../../components/ui/Bottom-Nav.astro';
+
+import ProductImage from '../../components/products/ProductImage.astro';
+import ProductInfo from '../../components/products/ProductInfo.astro';
+import ProductAccordion from '../../components/products/ProductAccordion.astro';
+import ProductPriceBox from '../../components/products/ProductPriceBox.astro';
+
+import SimilarProducts from '../../components/products/Similar-Products.astro';
+import Modal from '../../components/ui/Modal.astro';
+import { API_BASE_URL } from '../../config.js'; // Import Config
+
+const { id } = Astro.params;
+
+// 1. Fetch data produk (Server Side)
+let product = null;
+try {
+    // Gunakan API_BASE_URL dari config
+    const res = await fetch(`${API_BASE_URL}/products`);
+    const result = await res.json();
+    // Note: Idealnya backend punya endpoint /products/:id agar tidak fetch semua
+    // Tapi untuk sekarang filter manual di sini oke.
+    product = result.data.find((p) => p.id == id);
+} catch (e) {
+    console.error("Error fetching product detail:", e);
+}
+
+if (!product) return Astro.redirect('/404');
+
+const priceFormatted = `Rp ${Number(product.price).toLocaleString('id-ID')}`;
+
+// 2. Tentukan Tipe Produk (Pulsa/Kuota)
+const isPulsa = product.type === 'CREDIT' || product.category === 'Top-up Promo';
+const badgeClass = isPulsa
+    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800' 
+    : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800'; 
+
+// 3. Konten Accordion Dinamis
+let detailContent = "";
+
+if (isPulsa) {
+    detailContent = `
+        <ul class="space-y-3">
+            <li class="flex justify-between"><span>Nominal Pulsa</span><span class="font-bold">${product.product_name}</span></li>
+            <li class="flex justify-between"><span>Masa Aktif</span><span class="font-bold">Menambah Masa Aktif</span></li>
+            <li class="flex justify-between"><span>Operator</span><span class="font-bold uppercase">All Operator</span></li>
+        </ul>
+    `;
+} else {
+    detailContent = `
+        <ul class="space-y-3">
+            <li class="flex justify-between"><span>Kuota Utama</span><span class="font-bold">Full 24 Jam</span></li>
+            <li class="flex justify-between"><span>Jaringan</span><span class="font-bold">4G / 5G</span></li>
+            <li class="flex justify-between"><span>Masa Aktif</span><span class="font-bold">30 Hari</span></li>
+        </ul>
+    `;
+}
+
+const accordionItems = [
+    {
+        id: 'detail-paket',
+        title: isPulsa ? 'Rincian Pulsa' : 'Rincian Kuota',
+        icon: isPulsa ? 'fa-mobile-screen' : 'fa-chart-pie',
+        isOpen: true,
+        content: detailContent
+    },
+    {
+        id: 'detail-harga',
+        title: 'Rincian Pembayaran',
+        icon: 'fa-tag',
+        isOpen: false,
+        content: `
+            <ul class="space-y-3">
+                <li class="flex justify-between"><span>Harga Awal</span><span class="font-bold">${priceFormatted}</span></li>
+                <li class="flex justify-between"><span>Biaya Layanan</span><span class="font-bold text-green-600">Gratis</span></li>
+                <li class="flex justify-between"><span>PPN (11%)</span><span class="font-bold">Termasuk</span></li>
+                <li class="mt-2 pt-3 border-t border-dashed border-gray-300 dark:border-gray-600 flex justify-between">
+                    <span class="font-bold text-lg text-gray-800 dark:text-white">Total</span>
+                    <span class="font-bold text-lg text-primary">${priceFormatted}</span>
+                </li>
+            </ul>
+        `
+    }
+];
+---
+
+<Layout title={`${product.product_name} - Paketin`}>
+    <Navbar />
+
+    <main class="pb-24 min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+
+        <ProductImage product={product} />
+
+        <div class="container mx-auto px-4 -mt-6 relative z-30">
+            <div class="flex flex-col lg:flex-row gap-6">
+
+                <div class="w-full lg:w-2/3">
+                    <ProductInfo 
+                        product={product}
+                        badgeClass={badgeClass}
+                        priceFormatted={priceFormatted}
+                    />
+                </div>
+
+                <div class="w-full lg:w-1/3 flex flex-col gap-4">
+                    <ProductAccordion accordionItems={accordionItems} />
+                    
+                    <ProductPriceBox 
+                        productId={product.id}
+                        priceFormatted={priceFormatted}
+                    />
+                </div>
+
+            </div>
+
+            <div class="mt-12 mb-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <SimilarProducts 
+                    currentProductId={product.id}
+                    category={product.category}
+                />
+            </div>
+        </div>
+    </main>
+
+    <Modal
+        id="confirm_buy_modal"
+        title="Konfirmasi Pembelian"
+        message={`Apakah Anda yakin ingin membeli <b>${product.product_name}</b> seharga <span class="text-primary font-bold">${priceFormatted}</span>?`}
+    />
+
+    <Footer />
+    <BottomNav />
+</Layout>

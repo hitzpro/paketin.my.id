@@ -1,0 +1,32 @@
+---
+import Modal from '../ui/Modal.astro';
+
+import ProfileContainer from '../profile/ProfileContainer.astro';
+import ProfileFormHeader from '../profile/ProfileFormHeader.astro';
+import ProfileFormImage from '../profile/ProfileFormImage.astro';
+import ProfileFormFields from '../profile/ProfileFormFields.astro';
+import ProfileFormActions from '../profile/ProfileFormActions.astro';
+---
+
+<ProfileContainer title="Informasi Pribadi">
+
+    <!-- inject tombol edit -->
+    <Fragment slot="header-actions">
+        <ProfileFormHeader />
+    </Fragment>
+
+    <form id="profile-form" class="space-y-6">
+        
+        <ProfileFormImage />
+        <ProfileFormFields />
+        <ProfileFormActions />
+
+    </form>
+
+</ProfileContainer>
+
+<Modal 
+    id="save_profile_modal" 
+    title="Simpan Perubahan?" 
+    message="Pastikan data yang Anda masukkan sudah benar."
+/>

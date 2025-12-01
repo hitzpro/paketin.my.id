@@ -1,0 +1,70 @@
+---
+// src/pages/index.astro
+export const prerender = false;
+
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/ui/Navbar.astro';
+import BottomNav from '../components/ui/Bottom-Nav.astro';
+import Footer from '../components/ui/Footer.astro';
+import HomeHeader from '../components/home/HomeHeader.astro';
+import CategorySection from '../components/home/CategorySection.astro';
+import SpecialSection from '../components/home/SpecialSection.astro';
+import { API_BASE_URL } from '../config'; 
+
+// Data Kategori
+const categories = [
+    { 
+        name: "Untuk Kamu", 
+        slug: "rekomendasi", 
+        icon: "fa-wand-magic-sparkles", 
+        color: "bg-indigo-100 dark:bg-indigo-900/30", 
+        text: "text-indigo-600 dark:text-indigo-400" 
+    },
+    { name: "Pulsa", slug: "pulsa", icon: "fa-mobile-screen", color: "bg-blue-50 dark:bg-blue-900/20", text: "text-blue-700 dark:text-blue-400" },
+    { name: "Kuota", slug: "kuota", icon: "fa-wifi", color: "bg-green-50 dark:bg-green-900/20", text: "text-green-700 dark:text-green-400" },
+];
+
+let generalProducts = [];
+
+// Server Side Fetch untuk Produk Biasa
+try {
+    const resProd = await fetch(`${API_BASE_URL}/products`);
+    if (resProd.ok) {
+        const data = await resProd.json();
+        generalProducts = data.data || [];
+    }
+} catch (err) {
+    console.error("Fetch General Error:", err);
+}
+
+const specialProducts = generalProducts.slice(0, 10);
+---
+
+<Layout title="Paketin - Home">
+    <Navbar />
+
+    <main class="mb-24 w-full overflow-x-hidden font-inter">
+        <HomeHeader />
+        
+        <div class="container mx-auto px-5 mt-8 max-w-6xl">
+            <CategorySection categories={categories} />
+            
+            <div id="recommendation-container" class="hidden min-h-[300px] mb-10">
+                <div class="w-full h-72 bg-gray-100 dark:bg-gray-800 rounded-3xl animate-pulse"></div>
+            </div>
+
+            <SpecialSection specialProducts={specialProducts} />
+        </div>
+    </main>
+
+    <Footer />
+    <BottomNav />
+</Layout>
+
+<script>
+    import { initHomePage } from '../scripts/pages/home.js';
+
+    document.addEventListener('astro:page-load', () => {
+        initHomePage();
+    });
+</script>

@@ -1,0 +1,8 @@
+---
+import Accordion from "../../components/ui/Accordion.astro";
+const { accordionItems } = Astro.props;
+---
+
+<div class="bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <Accordion items={accordionItems} />
+</div>
