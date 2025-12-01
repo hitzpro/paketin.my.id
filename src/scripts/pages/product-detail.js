@@ -1,5 +1,5 @@
 // src/scripts/pages/product-detail.js
-import { apiPost } from '../../utils/api.js';
+import { apiPost } from '../utils/api.js';
 
 export function initProductDetail() {
     const btnBuy = document.getElementById('btn-buy-now');
