@@ -3,26 +3,3 @@
     <span id="timer-display">05:00</span>
 </div>
 
-<script>
-    // Logic Timer (tetap sama)
-    window.startTimer = (durationInSeconds, onTimeout) => {
-        let timer = durationInSeconds;
-        const display = document.querySelector('#timer-display');
-        
-        const interval = setInterval(() => {
-            const minutes = Math.floor(timer / 60);
-            const seconds = timer % 60;
-
-            if (display) {
-                display.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            }
-
-            if (--timer < 0) {
-                clearInterval(interval);
-                if (onTimeout) onTimeout();
-            }
-        }, 1000);
-
-        return interval; 
-    };
-</script>

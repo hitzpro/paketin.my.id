@@ -7,6 +7,7 @@ export function initPaymentPage(checkoutId) {
     const successArea = document.getElementById('state-success');
     const failedArea = document.getElementById('state-failed');
     const btnSimulate = document.getElementById('btn-simulate-scan');
+    const timerDisplay = document.getElementById('timer-display'); 
 
     let pollingInterval;
     let timerInterval;
@@ -61,7 +62,6 @@ export function initPaymentPage(checkoutId) {
             if (data.id == checkoutId) {
                 expiryTime = data.expiry;
             } else {
-                // ID beda = transaksi baru
                 localStorage.setItem('pending_transaction', JSON.stringify({ id: checkoutId, expiry: expiryTime }));
             }
         } catch (e) {
@@ -70,17 +70,36 @@ export function initPaymentPage(checkoutId) {
     } else {
         localStorage.setItem('pending_transaction', JSON.stringify({ id: checkoutId, expiry: expiryTime }));
     }
-
+    
     const secondsRemaining = Math.floor((expiryTime - Date.now()) / 1000);
 
     if (secondsRemaining <= 0) {
         showFailed();
-    } else {
-        // Pastikan fungsi startTimer global dari komponen CountdownTimer sudah ada
-        if (typeof window.startTimer === 'function') {
-            timerInterval = window.startTimer(secondsRemaining, showFailed);
+    }
+
+    // FUNGSI UPDATE TIMER LANGSUNG DI SINI
+    function updateTimer() {
+        const now = Date.now();
+        const secondsRemaining = Math.floor((expiryTime - now) / 1000);
+
+        if (secondsRemaining <= 0) {
+            clearInterval(timerInterval);
+            if (timerDisplay) timerDisplay.innerText = "00:00";
+            showFailed();
+        } else {
+            const m = Math.floor(secondsRemaining / 60);
+            const s = secondsRemaining % 60;
+            if (timerDisplay) {
+                timerDisplay.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+            }
         }
     }
+
+    // Jalankan sekali di awal biar gak nunggu 1 detik
+    updateTimer();
+    
+    // Loop setiap detik
+    timerInterval = setInterval(updateTimer, 1000);
 
     // 5. Polling Status (Setiap 3 detik)
     pollingInterval = setInterval(async () => {

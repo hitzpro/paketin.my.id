@@ -4,15 +4,20 @@ interface Props {
   price: string;
 }
 const { checkoutId, price } = Astro.props;
-const qrValue = `PAKETIN-PAY-${checkoutId}`;
+
+// Data QR Code: Sebaiknya berisi ID Checkout atau Link Pembayaran (jika sudah live)
+// Encode URI component agar aman
+const qrData = encodeURIComponent(`PAKETIN-PAY-${checkoutId}`); 
+const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${qrData}`;
 ---
 
 <div class="flex flex-col items-center animate-in fade-in zoom-in duration-300">
     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 mb-4">
         <img 
-            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrValue}`} 
+            src={qrUrl} 
             alt="Scan QR to Pay"
             class="w-48 h-48 object-contain"
+            loading="eager"
         />
     </div>
     

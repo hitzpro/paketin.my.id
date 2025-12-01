@@ -62,13 +62,16 @@ if (!transaction) return Astro.redirect('/404');
     </div>
 </Layout>
 
-<script define:vars={{ checkoutId: transaction.checkout_id, isPaid: transaction.is_paid }}>
+<script>
     import { initPaymentPage } from '../../scripts/pages/payment.js';
+    // Expose ke window agar bisa dipanggil oleh script inline di bawah
+    window.initPaymentPage = initPaymentPage;
+</script>
 
+<script define:vars={{ checkoutId: transaction.checkout_id, isPaid: transaction.is_paid }}>
     document.addEventListener('astro:page-load', () => {
-        // Hanya jalankan polling jika belum lunas
-        if (!isPaid) {
-            initPaymentPage(checkoutId);
+        if (!isPaid && window.initPaymentPage) {
+            window.initPaymentPage(checkoutId);
         }
     });
 </script>
