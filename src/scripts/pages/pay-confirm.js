@@ -1,5 +1,5 @@
 // src/scripts/pages/pay-confirm.js
-import { apiPost, apiGet } from '../../utils/api.js';
+import { apiPost, apiGet } from '../../scripts/utils/api.js';
 
 export function initPayConfirm(checkoutId) {
     const btnPay = document.getElementById('btn-pay-confirm');
