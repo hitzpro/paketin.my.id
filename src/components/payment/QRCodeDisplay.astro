@@ -1,31 +1,16 @@
 ---
+// src/components/payment/QRCodeDisplay.astro
 interface Props {
   checkoutId: string;
   price: string;
 }
+import { API_BASE_URL } from '../../config'; // Butuh URL frontend sebenernya
+
 const { checkoutId, price } = Astro.props;
 
-// Data QR Code: Sebaiknya berisi ID Checkout atau Link Pembayaran (jika sudah live)
-// Encode URI component agar aman
-const qrData = encodeURIComponent(`PAKETIN-PAY-${checkoutId}`); 
-const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${qrData}`;
+
+const scanUrl = `${Astro.url.origin}/pay-confirm/${checkoutId}`; 
+const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(scanUrl)}`;
 ---
 
-<div class="flex flex-col items-center animate-in fade-in zoom-in duration-300">
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 mb-4">
-        <img 
-            src={qrUrl} 
-            alt="Scan QR to Pay"
-            class="w-48 h-48 object-contain"
-            loading="eager"
-        />
-    </div>
-    
-    <p class="text-gray-500 dark:text-gray-400 text-sm mb-2 transition-colors">Scan QRIS di atas dengan aplikasi e-wallet</p>
-    
-    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 transition-colors">{price}</h3>
-
-    <button id="btn-simulate-scan" class="btn btn-sm btn-outline btn-warning opacity-50 hover:opacity-100 dark:text-warning dark:border-warning">
-        <i class="fa-solid fa-mobile-screen"></i> Simulasikan Scan HP
-    </button>
-</div>
+<img src={qrUrl} ... />

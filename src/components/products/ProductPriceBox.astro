@@ -15,6 +15,7 @@ const { productId, totalFormatted, totalPrice } = Astro.props;
         id="btn-buy-now"
         class="w-full btn btn-primary border-none text-white font-bold py-3.5 rounded-xl hover:brightness-110 active:scale-[0.98] transition-all duration-200 text-base"
         data-product-id={productId}
+        data-total-price={totalPrice} 
     >
         Bayar Sekarang
         <i class="fa-solid fa-arrow-right ml-2"></i>
@@ -28,37 +29,39 @@ const { productId, totalFormatted, totalPrice } = Astro.props;
 
 <script>
     import { API_BASE_URL } from '../../config';
+    import { apiPost } from '../../scripts/utils/api.js'; // Gunakan wrapper biar konsisten
+
     document.addEventListener('astro:page-load', () => {
         const btnBuy = document.getElementById('btn-buy-now');
-        const API_URL = API_BASE_URL;
-
+        
         if (btnBuy) {
             btnBuy.addEventListener('click', async () => {
                 const userStr = localStorage.getItem('paketin_user');
                 if (!userStr) {
-                    alert("Silakan login terlebih dahulu untuk membeli paket.");
-                    window.location.href = '/auth/login';
+                    if(confirm("Silakan login terlebih dahulu.")) {
+                         window.location.href = '/auth/login';
+                    }
                     return;
                 }
 
                 const user = JSON.parse(userStr);
                 const productId = btnBuy.getAttribute('data-product-id');
+                // AMBIL HARGA DARI ATTRIBUTE
+                const finalPrice = btnBuy.getAttribute('data-total-price');
 
-                // Modal mode
+                // Modal mode logic (Sama seperti sebelumnya)
                 if (typeof window['openModal_confirm_buy_modal'] === 'function') {
                     const modalConfirmBtn = document.getElementById('confirm_buy_modal-confirm-btn');
                     if (modalConfirmBtn) {
                         const newBtn = modalConfirmBtn.cloneNode(true);
                         modalConfirmBtn.parentNode.replaceChild(newBtn, modalConfirmBtn);
-                        newBtn.addEventListener('click', () => processCheckout(user.id, productId, totalPrice));
-
+                        // PASS finalPrice KE SINI
+                        newBtn.addEventListener('click', () => processCheckout(user.id, productId, finalPrice));
                     }
                     window['openModal_confirm_buy_modal']();
-                } 
-                // Fallback
-                else {
+                } else {
                     if (confirm("Lanjutkan ke pembayaran?")) {
-                        processCheckout(user.id, productId);
+                        processCheckout(user.id, productId, finalPrice);
                     }
                 }
             });
@@ -71,34 +74,29 @@ const { productId, totalFormatted, totalPrice } = Astro.props;
             btnBuy.disabled = true;
 
             try {
-                const response = await fetch(`${API_URL}/checkout/create`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: userId,
-                        product_id: productId,
-                        quantity: 1,
-                        final_price: finalPrice
-                    })
+                // Gunakan Wrapper apiPost
+                const res = await apiPost('/checkout/create', {
+                    user_id: userId,
+                    product_id: productId,
+                    quantity: 1,
+                    final_price: finalPrice // Kirim harga yang benar
                 });
 
-                const result = await response.json();
-
-                if (response.ok) {
+                if (res.ok) {
                     if (typeof window.showToast === 'function') window.showToast('Tagihan dibuat!', 'success');
                     setTimeout(() => {
-                        window.location.href = `/payment/${result.checkout_id}`;
+                        window.location.href = `/payment/${res.data.checkout_id}`;
                     }, 500);
                 } else {
-                    alert('Gagal: ' + result.message);
+                    alert('Gagal: ' + res.error);
+                    btnBuy.innerHTML = originalText;
+                    btnBuy.disabled = false;
                 }
-
             } catch (error) {
                 alert("Gagal menghubungi server.");
+                btnBuy.innerHTML = originalText;
+                btnBuy.disabled = false;
             }
-
-            btnBuy.innerHTML = originalText;
-            btnBuy.disabled = false;
         }
     });
 </script>

@@ -1,0 +1,73 @@
+---
+// src/pages/pay-confirm/[id].astro
+// Halaman ini dibuka di HP user saat scan QR
+export const prerender = false;
+import Layout from '../../layouts/Layout.astro';
+
+const { id } = Astro.params;
+---
+
+<Layout title="Konfirmasi Bayar">
+    <div class="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50 dark:bg-gray-900 text-center">
+        
+        <div id="confirm-container" class="max-w-sm w-full bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl">
+            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-fingerprint text-3xl"></i>
+            </div>
+            
+            <h1 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Konfirmasi Bayar</h1>
+            <p class="text-gray-500 text-sm mb-6">ID Transaksi: #{id}</p>
+
+            <button id="btn-pay" class="btn btn-primary w-full rounded-xl text-white">
+                Bayar Sekarang
+            </button>
+        </div>
+
+        <div id="success-container" class="hidden max-w-sm w-full bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-check text-3xl"></i>
+            </div>
+            <h1 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Sukses!</h1>
+            <p class="text-gray-500 text-sm">Pembayaran diterima. Silakan cek perangkat utama Anda.</p>
+        </div>
+
+    </div>
+</Layout>
+
+<script define:vars={{ checkoutId: id }}>
+    import { apiPost } from '../../scripts/utils/api.js';
+    
+    document.addEventListener('astro:page-load', () => {
+        const btn = document.getElementById('btn-pay');
+        const confirmBox = document.getElementById('confirm-container');
+        const successBox = document.getElementById('success-container');
+
+        if(btn) {
+            btn.addEventListener('click', async () => {
+                // Cek Login di HP (Opsional, kalau mau public payment bisa skip)
+                const userStr = localStorage.getItem('paketin_user');
+                if(!userStr) {
+                    alert("Silakan login di HP ini dulu.");
+                    window.location.href = '/auth/login';
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.innerText = "Memproses...";
+
+                // Panggil API Pay
+                const res = await apiPost('/payment/pay', { checkout_id: checkoutId });
+
+                if (res.ok) {
+                    confirmBox.classList.add('hidden');
+                    successBox.classList.remove('hidden');
+                    // Di Laptop, polling akan mendeteksi perubahan ini otomatis!
+                } else {
+                    alert("Gagal bayar: " + res.error);
+                    btn.disabled = false;
+                    btn.innerText = "Bayar Sekarang";
+                }
+            });
+        }
+    });
+</script>
