@@ -4,13 +4,45 @@ interface Props {
   checkoutId: string;
   price: string;
 }
-import { API_BASE_URL } from '../../config'; // Butuh URL frontend sebenernya
-
 const { checkoutId, price } = Astro.props;
 
+// LOGIKA URL QR CODE:
+// Di Production: Gunakan URL website asli.
+// Di Localhost: Kita harus manual kasih tau IP Laptop, karena 'localhost' gak jalan di HP.
+// Ganti '192.168.1.X' dengan IP Laptop Anda jika testing lokal!
+const BASE_URL = import.meta.env.PROD 
+    ? import.meta.env.SITE // URL Vercel
+    : "http://192.168.1.8:4321"; // <--- GANTI INI DENGAN IP LAPTOP KAMU (Cek via cmd: ipconfig)
 
-const scanUrl = `${Astro.url.origin}/pay-confirm/${checkoutId}`; 
-const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(scanUrl)}`;
+const scanUrl = `${BASE_URL}/pay-confirm/${checkoutId}`;
+const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=10&data=${encodeURIComponent(scanUrl)}`;
 ---
 
-<img src={qrUrl} ... />
+<div class="flex flex-col items-center animate-in fade-in zoom-in duration-500">
+    
+    <div class="relative group">
+        <div class="bg-white p-4 rounded-3xl shadow-lg border-2 border-gray-100 dark:border-gray-600">
+            <img 
+                src={qrApi} 
+                alt="Scan QR to Pay"
+                class="w-56 h-56 object-contain rounded-xl"
+                loading="eager"
+            />
+        </div>
+        
+        <div class="absolute -bottom-3 -right-3 bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg border-4 border-gray-50 dark:border-gray-900">
+            <i class="fa-solid fa-camera"></i>
+        </div>
+    </div>
+    
+    <div class="text-center mt-6">
+        <p class="text-gray-500 dark:text-gray-400 text-sm mb-1">Scan menggunakan HP Anda</p>
+        <h3 class="text-3xl font-black text-gray-800 dark:text-white tracking-tight">{price}</h3>
+    </div>
+
+    <div class="mt-6">
+        <button id="btn-simulate-scan" class="btn btn-sm btn-ghost text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <i class="fa-solid fa-bug mr-2"></i> Simulasi Scan (Dev Mode)
+        </button>
+    </div>
+</div>

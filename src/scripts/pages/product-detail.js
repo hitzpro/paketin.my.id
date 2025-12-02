@@ -90,4 +90,67 @@ export function initProductDetail() {
             modal.classList.remove('flex');
         });
     }
+
+    initFavoriteButton();
+}
+
+
+// Logic Tombol Favorit Detail (BARU)
+function initFavoriteButton() {
+    const btnFav = document.getElementById('btn-favorite-detail');
+    
+    if (!btnFav) return;
+
+    // Clone agar event listener fresh
+    const newBtnFav = btnFav.cloneNode(true);
+    btnFav.parentNode.replaceChild(newBtnFav, btnFav);
+
+    newBtnFav.addEventListener('click', async () => {
+        const userStr = localStorage.getItem('paketin_user');
+        if (!userStr) {
+            if(confirm("Silakan login untuk menyimpan favorit.")) {
+                window.location.href = '/auth/login';
+            }
+            return;
+        }
+
+        const user = JSON.parse(userStr);
+        const productId = newBtnFav.getAttribute('data-product-id');
+        const icon = newBtnFav.querySelector('i');
+
+        // Optimistic UI Update (Biar responsif)
+        const isLiked = icon.classList.contains('text-red-500');
+        if (isLiked) {
+            icon.classList.remove('text-red-500', 'fa-solid');
+            icon.classList.add('text-gray-400', 'fa-regular');
+        } else {
+            icon.classList.add('text-red-500', 'fa-solid');
+            icon.classList.remove('text-gray-400', 'fa-regular');
+        }
+
+        try {
+            // Call API
+            const res = await apiPost('/favorites/toggle', {
+                user_id: user.id,
+                product_id: productId
+            });
+
+            if (res.ok) {
+                if (typeof window.showToast === 'function') window.showToast(res.data.message, 'success');
+            } else {
+                // Revert UI kalau gagal
+                if (typeof window.showToast === 'function') window.showToast('Gagal update favorit', 'error');
+                // Balikin icon
+                if (isLiked) {
+                    icon.classList.add('text-red-500', 'fa-solid');
+                    icon.classList.remove('text-gray-400', 'fa-regular');
+                } else {
+                    icon.classList.remove('text-red-500', 'fa-solid');
+                    icon.classList.add('text-gray-400', 'fa-regular');
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    });
 }
