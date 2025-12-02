@@ -1,20 +1,18 @@
 ---
-// src/components/payment/QRCodeDisplay.astro
+import { SITE_URL } from '../../config'; // Import URL Frontend dari config
+
 interface Props {
   checkoutId: string;
   price: string;
 }
 const { checkoutId, price } = Astro.props;
 
-// LOGIKA URL QR CODE:
-// Di Production: Gunakan URL website asli.
-// Di Localhost: Kita harus manual kasih tau IP Laptop, karena 'localhost' gak jalan di HP.
-// Ganti '192.168.1.X' dengan IP Laptop Anda jika testing lokal!
-const BASE_URL = import.meta.env.PROD 
-    ? import.meta.env.SITE // URL Vercel
-    : "http://192.168.1.8:4321"; // <--- GANTI INI DENGAN IP LAPTOP KAMU (Cek via cmd: ipconfig)
+// 1. Buat URL Tujuan Scan
+// Hasilnya: http://192.168.1.8:4321/pay-confirm/123 (Valid bisa dibuka HP)
+const scanUrl = `${SITE_URL}/pay-confirm/${checkoutId}`;
 
-const scanUrl = `${BASE_URL}/pay-confirm/${checkoutId}`;
+// 2. Generate QR Image
+// Kita encode URL agar karakter spesial aman
 const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=10&data=${encodeURIComponent(scanUrl)}`;
 ---
 
@@ -38,7 +36,7 @@ const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=1
     <div class="text-center mt-6">
         <p class="text-gray-500 dark:text-gray-400 text-sm mb-1">Scan menggunakan HP Anda</p>
         <h3 class="text-3xl font-black text-gray-800 dark:text-white tracking-tight">{price}</h3>
-    </div>
+        </div>
 
     <div class="mt-6">
         <button id="btn-simulate-scan" class="btn btn-sm btn-ghost text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
