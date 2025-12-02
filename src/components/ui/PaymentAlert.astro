@@ -1,75 +1,89 @@
-<!-- Floating Alert -->
-<div id="payment-alert" class="hidden fixed top-20 right-4 z-50 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-l-4 border-l-orange-500 border-gray-200 dark:border-gray-700 p-4 animate-in slide-in-from-right duration-500 cursor-pointer hover:scale-105 transition-transform">
-    <div class="flex justify-between items-start">
-        <div class="flex gap-3">
-            <div class="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg h-fit">
-                <i class="fa-solid fa-clock text-orange-600 dark:text-orange-400"></i>
-            </div>
-            <div>
-                <h4 class="font-bold text-gray-800 dark:text-white text-sm">Menunggu Pembayaran</h4>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Selesaikan sebelum waktu habis!</p>
-                <span id="alert-countdown" class="text-orange-600 font-mono font-bold text-sm mt-1 block">05:00</span>
+---
+// src/components/ui/PaymentAlert.astro
+---
+
+<div id="payment-alert-widget" 
+     class="hidden fixed top-24 left-4 z-40 cursor-pointer group animate-in slide-in-from-left duration-500">
+    
+    <div class="flex items-center gap-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-orange-200 dark:border-orange-900/50 p-3 pr-4 rounded-2xl shadow-lg hover:shadow-orange-500/20 transition-all hover:scale-105">
+        
+        <div class="relative flex items-center justify-center w-10 h-10 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-full">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-20"></span>
+            <i class="fa-regular fa-clock text-lg"></i>
+        </div>
+
+        <div class="flex flex-col">
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Menunggu Pembayaran</span>
+            <div class="flex items-center gap-2">
+                <span id="alert-timer" class="text-sm font-mono font-bold text-gray-800 dark:text-white">00:00</span>
+                <span class="text-xs text-orange-500 font-medium group-hover:translate-x-1 transition-transform">
+                    Bayar <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </span>
             </div>
         </div>
-        <button id="btn-close-alert" class="text-gray-400 hover:text-gray-600">
-            <i class="fa-solid fa-xmark"></i>
+
+        <button id="btn-close-alert" class="absolute -top-2 -right-2 bg-gray-200 dark:bg-gray-700 text-gray-500 rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-100 hover:text-red-500 transition-colors">
+            <i class="fa-solid fa-times"></i>
         </button>
     </div>
 </div>
 
 <script>
+    import { API_BASE_URL } from '../../config'; // Jika perlu cek status ke API
+
     document.addEventListener('astro:page-load', () => {
-        const alertEl = document.getElementById('payment-alert');
-        const alertTimer = document.getElementById('alert-countdown');
+        const widget = document.getElementById('payment-alert-widget');
+        const timerDisplay = document.getElementById('alert-timer');
         const closeBtn = document.getElementById('btn-close-alert');
-
-        // Cek LocalStorage
-        const pendingTx = localStorage.getItem('pending_transaction');
         
-        if (pendingTx && alertEl && alertTimer) {
-            const { id, expiry } = JSON.parse(pendingTx);
+        if (!widget || !timerDisplay) return;
+
+        // 1. Ambil Data dari LocalStorage
+        const pendingData = localStorage.getItem('pending_transaction');
+        if (!pendingData) return;
+
+        const { id, expiry } = JSON.parse(pendingData);
+        
+        // 2. Fungsi Update Timer
+        const updateWidget = () => {
             const now = Date.now();
-            const timeLeft = Math.floor((expiry - now) / 1000);
+            const secondsLeft = Math.floor((expiry - now) / 1000);
 
-            // Jika waktu masih ada dan kita BUKAN di halaman payment itu sendiri
-            if (timeLeft > 0 && !window.location.pathname.includes(`/payment/${id}`)) {
-                alertEl.classList.remove('hidden');
-                
-                // Klik alert arahkan ke payment
-                alertEl.onclick = (e) => {
-                    // Jangan redirect kalau klik tombol close
-                    if (!(e.target as HTMLElement).closest('#btn-close-alert')) {
-                        window.location.href = `/payment/${id}`;
-                    }
-                };
-
-                // Logic Timer Kecil di Alert
-                const interval = setInterval(() => {
-                    const currentNow = Date.now();
-                    const currentLeft = Math.floor((expiry - currentNow) / 1000);
-                    
-                    if (currentLeft <= 0) {
-                        clearInterval(interval);
-                        alertEl.classList.add('hidden');
-                        localStorage.removeItem('pending_transaction');
-                    } else {
-                        const m = Math.floor(currentLeft / 60);
-                        const s = currentLeft % 60;
-                        alertTimer.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-                    }
-                }, 1000);
-            } else {
-                // Expired atau sedang di halaman payment
+            if (secondsLeft <= 0) {
+                // Waktu habis, sembunyikan widget & hapus storage
+                widget.classList.add('hidden');
                 localStorage.removeItem('pending_transaction');
+                return;
             }
-        }
 
-        if (closeBtn && alertEl) {
-            closeBtn.onclick = () => {
-                alertEl.classList.add('hidden');
-                // Opsional: Jangan hapus localStorage agar muncul lagi pas refresh, atau hapus permanen
-                // localStorage.removeItem('pending_transaction'); 
+            const m = Math.floor(secondsLeft / 60);
+            const s = secondsLeft % 60;
+            timerDisplay.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+            
+            // Tampilkan widget jika masih tersembunyi
+            if (widget.classList.contains('hidden')) {
+                widget.classList.remove('hidden');
             }
+        };
+
+        // Jalankan sekali lalu interval
+        updateWidget();
+        const interval = setInterval(updateWidget, 1000);
+
+        // 3. Klik Widget -> Ke Halaman Payment
+        widget.addEventListener('click', (e) => {
+            // Jangan redirect kalau yg diklik tombol close
+            if (e.target.closest('#btn-close-alert')) return;
+            window.location.href = `/payment/${id}`;
+        });
+
+        // 4. Klik Close -> Hilangkan Widget Saja (Storage tetap ada)
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Stop event bubbling ke widget
+                widget.classList.add('hidden');
+                clearInterval(interval);
+            });
         }
     });
 </script>
