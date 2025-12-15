@@ -1,4 +1,4 @@
-import { apiPost } from "../../utils/api.js";
+import { apiPost, apiPut } from "../../utils/api.js";
 
 export function setupSaveProfile(dom, user) {
     if (!dom.btnConfirmSave) return;
@@ -17,19 +17,22 @@ export function setupSaveProfile(dom, user) {
             profile_picture: dom.state.newProfilePictureBase64 || undefined,
         };
 
-        const result = await apiPost("/user/update", payload);
-
-        if (result.user) {
+        const result = await apiPut("/user/update", payload); 
+        
+        if (result.ok && result.data.user) {
             window.showToast?.("Profil berhasil diperbarui!", "success");
 
-            const updated = { ...user, ...result.user };
+            // Ambil data user dari dalam result.data
+            const updated = { ...user, ...result.data.user };
             localStorage.setItem("paketin_user", JSON.stringify(updated));
-            dom.state.originalData = result.user;
+            dom.state.originalData = result.data.user;
 
             dom.disableEditMode();
             setTimeout(() => window.location.reload(), 600);
         } else {
-            window.showToast?.(result.message || "Gagal update", "error");
+
+            const msg = result.error || result.data?.message || "Gagal update";
+            window.showToast?.(msg, "error");
         }
     });
 }
