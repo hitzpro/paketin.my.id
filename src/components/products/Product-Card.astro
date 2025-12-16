@@ -5,9 +5,8 @@ interface Props {
     description: string;
     price: string;
     category: string;
-    // Tambahkan prop 'type' dari DB
     type?: string; 
-    image?: string; // Tambahkan image agar tidak error jika dipanggil
+    image?: string;
 }
 
 const { id, title, description, price, category, type } = Astro.props;
@@ -27,15 +26,17 @@ const iconClass = isPulsa ? 'fa-mobile-screen' : 'fa-wifi';
             <span class={`badge border-none py-3 px-3 font-medium rounded-full text-xs ${badgeClass}`}>
                 {categoryLabel}
             </span>
+       
             <div class="w-6 h-6 flex items-center justify-end text-gray-400 dark:text-gray-500">
                 <i class={`fa-solid ${iconClass} text-lg`}></i>
             </div>
         </div>
 
         <div class="mb-2">
-            <p class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold mb-1">{category}</p>
+            <p class="text-[0.625rem] text-gray-400 uppercase tracking-wider font-semibold mb-1">{category}</p>
+            
             <h2 class="card-title text-base font-bold text-gray-800 dark:text-white mb-1 leading-tight line-clamp-2">
-                {title}
+               {title}
             </h2>
             <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">
                 {description}
@@ -43,9 +44,8 @@ const iconClass = isPulsa ? 'fa-mobile-screen' : 'fa-wifi';
         </div>
 
         <div class="card-actions items-end justify-between mt-auto pt-2 border-t border-gray-50 dark:border-gray-700">
-            
             <div>
-                <small class="text-gray-400 block text-[10px] leading-tight">Harga</small>
+                <small class="text-gray-400 block text-[0.625rem] leading-tight">Harga</small>
                 <div class="text-blue-600 dark:text-blue-400 font-bold text-lg">
                     {price}
                 </div>
@@ -56,11 +56,11 @@ const iconClass = isPulsa ? 'fa-mobile-screen' : 'fa-wifi';
                     Beli
                 </a>
         
-                <button 
+               <button 
                     class="btn btn-ghost btn-sm p-2 rounded-md btn-wishlist group/love text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700" 
                     data-product-id={id}
                 >
-                    <i class="fa-regular fa-heart text-lg group-active/love:scale-90 transition-transform"></i>
+                  <i class="fa-regular fa-heart text-lg group-active/love:scale-90 transition-transform"></i>
                 </button>
             </div>
         </div>

@@ -1,6 +1,5 @@
 ---
-const { id, title, description, price, image, category, type } = Astro.props; 
-
+const { id, title, description, price, image, category, type } = Astro.props;
 // LOGIKA DINAMIS
 const isPulsa = type === 'CREDIT' || category === 'Top-up Promo';
 
@@ -8,7 +7,7 @@ const badgeColor = isPulsa ? "bg-yellow-500" : "bg-blue-600";
 const badgeText = isPulsa ? "Pulsa" : "Kuota";
 ---
 
-<div class="relative w-[260px] sm:w-[280px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all flex flex-col h-full group">
+<div class="relative w-[16.25rem] sm:w-[17.5rem] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all flex flex-col h-full group">
 
   <figure class="w-full h-36 overflow-hidden rounded-t-lg bg-gray-100 dark:bg-gray-700 relative">
     <img 
@@ -25,10 +24,11 @@ const badgeText = isPulsa ? "Pulsa" : "Kuota";
     
     <div class="flex justify-between items-start mb-1 gap-2">
       <div>
-          <span class="text-[10px] text-gray-400 uppercase font-bold block mb-0.5">{category}</span>
+          <span class="text-[0.625rem] text-gray-400 uppercase font-bold block mb-0.5">{category}</span>
           <h5 class="font-bold text-gray-800 dark:text-gray-100 text-base line-clamp-1" title={title}>{title}</h5>
       </div>
-      <span class={`text-[10px] font-bold px-2 py-0.5 rounded-md text-white whitespace-nowrap ${badgeColor}`}>
+      
+      <span class={`text-[0.625rem] font-bold px-2 py-0.5 rounded-md text-white whitespace-nowrap ${badgeColor}`}>
         {badgeText}
       </span>
     </div>

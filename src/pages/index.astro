@@ -59,12 +59,11 @@ const specialProducts = generalProducts.slice(0, 10);
 
     <Footer />
     <BottomNav />
+    <script>
+        import { initHomePage } from '../scripts/pages/home.js';
+    
+        document.addEventListener('astro:page-load', () => {
+            initHomePage();
+        });
+    </script>
 </Layout>
-
-<script>
-    import { initHomePage } from '../scripts/pages/home.js';
-
-    document.addEventListener('astro:page-load', () => {
-        initHomePage();
-    });
-</script>

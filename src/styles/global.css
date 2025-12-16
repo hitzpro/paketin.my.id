@@ -10,6 +10,21 @@
 /* 🔥 WAJIB: Override agar dark mode baca class HTML, bukan settingan laptop */
 @variant dark (&:where(.dark, .dark *));
 
+/* Small (Misal: 14px) */
+html[data-font-size="small"] {
+  font-size: 87.5%; 
+}
+
+/* Large (Misal: 18px) */
+html[data-font-size="large"] {
+  font-size: 112.5%;
+}
+
+/* Extra Large jika butuh (Misal: 20px) */
+html[data-font-size="xl"] {
+  font-size: 125%;
+}
+
 /* Base settings */
 :root {
   color-scheme: light;

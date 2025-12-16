@@ -3,14 +3,7 @@
 import Modal from '../ui/Modal.astro';
 ---
 
-<div class="w-full max-w-[380px] mx-auto flex flex-col gap-6">
-    
-    <div class="text-center">
-        <p class="text-sm text-gray-500 dark:text-gray-400">
-            Kode OTP telah dikirim ke nomor/email Anda.
-            <br>Masukkan kode untuk verifikasi.
-        </p>
-    </div>
+<div class="w-full max-w-[24rem] mx-auto flex flex-col gap-6">
 
     <form id="otp-form" class="flex flex-col gap-6 w-full">
     
@@ -49,6 +42,12 @@ import Modal from '../ui/Modal.astro';
         </div>
     
     </form>
+
+    <div class="pt-4 border-t border-gray-200 dark:border-slate-700">
+        <button type="button" id="btn-simulate-otp" class="w-full py-2 px-4 border border-dashed border-yellow-500 text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/10 hover:bg-yellow-100 dark:hover:bg-yellow-900/20 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-2">
+            <i class="fa-solid fa-bug"></i> Simulasi OTP (Dev Mode)
+        </button>
+    </div>
 
     <div class="text-center">
         <p class="text-sm text-gray-600 dark:text-gray-400">

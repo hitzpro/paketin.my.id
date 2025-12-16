@@ -2,44 +2,41 @@
 
 export function initFontSize() {
     const buttons = document.querySelectorAll(".btn-font-size");
-    const body = document.body;
+    const html = document.documentElement; // Target HTML, bukan Body
 
-    // 1. Terapkan ukuran font tersimpan saat load
+    // 1. Terapkan ukuran tersimpan (sudah dihandle script di head, tapi ini untuk safety)
     const saved = localStorage.getItem("fontSize") || "medium";
-    apply(saved);
+    updateUI(saved);
 
-    // 2. Loop semua tombol font size (termasuk btn-font-small/large jika ada class-nya)
     buttons.forEach(btn => {
-        // CEK: Apakah listener sudah terpasang?
         if (btn.dataset.hasListener === "true") return;
 
         btn.addEventListener("click", () => {
-            // Ambil size dari data-size="small/medium/large"
-            const size = btn.dataset.size; 
+            const size = btn.dataset.size; // "small", "medium", "large"
             if (size) {
-                apply(size);
+                // Set Attribute di HTML
+                html.setAttribute("data-font-size", size);
+                
+                // Simpan ke LocalStorage
                 localStorage.setItem("fontSize", size);
                 
-                // Opsional: Update UI tombol aktif (visual feedback)
-                updateActiveButton(buttons, btn);
+                // Update tombol aktif
+                updateUI(size);
             }
         });
 
-        // Tandai sudah dipasang
         btn.dataset.hasListener = "true";
     });
 
-    function apply(size) {
-        body.classList.remove("text-sm", "text-base", "text-lg");
-
-        if (size === "small") body.classList.add("text-sm");
-        else if (size === "large") body.classList.add("text-lg");
-        else body.classList.add("text-base"); // Default medium
-    }
-
-    // Helper visual (opsional)
-    function updateActiveButton(allBtns, activeBtn) {
-        allBtns.forEach(b => b.classList.remove("btn-active", "btn-primary"));
-        activeBtn.classList.add("btn-active", "btn-primary");
+    function updateUI(activeSize) {
+        // Hapus class aktif dari semua tombol
+        buttons.forEach(b => {
+            b.classList.remove("ring-2", "ring-offset-2", "ring-indigo-500"); // Contoh style aktif
+            
+            // Jika tombol ini sesuai dengan size yang aktif
+            if(b.dataset.size === activeSize) {
+                b.classList.add("ring-2", "ring-offset-2", "ring-indigo-500");
+            }
+        });
     }
 }

@@ -23,17 +23,17 @@ const { productId, totalFormatted, totalPrice } = Astro.props;
 
     <div class="mt-4 flex items-center justify-center gap-1.5 opacity-60">
         <i class="fa-solid fa-shield-halved text-green-600 dark:text-green-400 text-xs"></i>
-        <span class="text-[10px] font-medium text-gray-500 dark:text-gray-400">Garansi uang kembali</span>
+        <span class="text-[0.625rem] font-medium text-gray-500 dark:text-gray-400">Garansi uang kembali</span>
     </div>
 </div>
 
 <script>
     import { API_BASE_URL } from '../../config';
-    import { apiPost } from '../../scripts/utils/api.js'; // Gunakan wrapper biar konsisten
+    import { apiPost } from '../../scripts/utils/api.js';
 
     document.addEventListener('astro:page-load', () => {
+        // ... (Script logika JS tidak perlu diubah karena tidak mengatur CSS layout)
         const btnBuy = document.getElementById('btn-buy-now');
-        
         if (btnBuy) {
             btnBuy.addEventListener('click', async () => {
                 const userStr = localStorage.getItem('paketin_user');
@@ -46,16 +46,13 @@ const { productId, totalFormatted, totalPrice } = Astro.props;
 
                 const user = JSON.parse(userStr);
                 const productId = btnBuy.getAttribute('data-product-id');
-                // AMBIL HARGA DARI ATTRIBUTE
                 const finalPrice = btnBuy.getAttribute('data-total-price');
 
-                // Modal mode logic (Sama seperti sebelumnya)
                 if (typeof window['openModal_confirm_buy_modal'] === 'function') {
                     const modalConfirmBtn = document.getElementById('confirm_buy_modal-confirm-btn');
                     if (modalConfirmBtn) {
                         const newBtn = modalConfirmBtn.cloneNode(true);
                         modalConfirmBtn.parentNode.replaceChild(newBtn, modalConfirmBtn);
-                        // PASS finalPrice KE SINI
                         newBtn.addEventListener('click', () => processCheckout(user.id, productId, finalPrice));
                     }
                     window['openModal_confirm_buy_modal']();
@@ -72,16 +69,13 @@ const { productId, totalFormatted, totalPrice } = Astro.props;
             const originalText = btnBuy.innerHTML;
             btnBuy.innerHTML = '<span class="loading loading-spinner"></span> Memproses...';
             btnBuy.disabled = true;
-
             try {
-                // Gunakan Wrapper apiPost
                 const res = await apiPost('/checkout/create', {
                     user_id: userId,
                     product_id: productId,
                     quantity: 1,
-                    final_price: finalPrice // Kirim harga yang benar
+                    final_price: finalPrice
                 });
-
                 if (res.ok) {
                     if (typeof window.showToast === 'function') window.showToast('Tagihan dibuat!', 'success');
                     setTimeout(() => {

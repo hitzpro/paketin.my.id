@@ -21,6 +21,7 @@ export function initOtpForm() {
     const countdownDisplay = document.getElementById('countdown');
     const btnResend = document.getElementById('resend-otp');
     const inputs = document.querySelectorAll('.otp-input');
+    const btnSimulate = document.getElementById('btn-simulate-otp');
 
     // ============================================================
     // Helper Toast dan Loading
@@ -204,6 +205,59 @@ export function initOtpForm() {
                 safeToast('Error koneksi', 'error');
                 btnResend.disabled = false;
                 btnResend.innerText = 'Kirim Ulang OTP';
+            }
+        });
+    }
+
+    // ============================================================
+    // 8. LOGIC SIMULASI OTP (NEW FEATURE)
+    // ============================================================
+    if (btnSimulate) {
+        btnSimulate.addEventListener('click', async () => {
+            
+            // 1. Ubah tombol jadi loading state
+            const originalText = btnSimulate.innerHTML;
+            btnSimulate.disabled = true;
+            btnSimulate.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengambil OTP...`;
+
+            try {
+                // 2. Fetch ke backend
+                const response = await fetch(`${API_BASE_URL}/simulate-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone_number: pendingAuth.phone_number })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.otp_code) {
+                    // 3. Jika Sukses:
+                    const otpCode = String(result.otp_code);
+                    
+                    // Isi ke input fields satu per satu
+                    inputs.forEach((input, index) => {
+                        if (otpCode[index]) {
+                            input.value = otpCode[index];
+                        }
+                    });
+
+                    // Toast sukses
+                    safeToast(`OTP Diterima: ${otpCode}`, 'success');
+                    
+                    // Fokus ke input terakhir atau langsung trigger submit (opsional)
+                    inputs[inputs.length - 1].focus();
+
+                } else {
+                    safeToast(result.message || 'Gagal simulasi', 'warning');
+                }
+
+            } catch (error) {
+                console.error(error);
+                safeToast('Error koneksi simulasi', 'error');
+            } finally {
+                // 4. Balikin tombol ke semula
+                btnSimulate.disabled = false;
+                btnSimulate.innerHTML = originalText;
             }
         });
     }

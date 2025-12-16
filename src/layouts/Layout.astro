@@ -14,7 +14,7 @@ const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="id" data-theme="light"> 
+<html lang="id" data-theme="light" data-font-size="medium"> 
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,14 +32,30 @@ const { title } = Astro.props;
 
         <ClientRouter />
 
-        <script>
-            import { initTheme } from '../scripts/core/theme.js';
+        <script is:inline>
+            // Definisikan fungsi di window agar scope-nya global dan aman
+            window.applyThemeSettings = function() {
+                // 1. Theme
+                const theme = localStorage.getItem('theme');
+                const isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+
+                // 2. Font Size
+                const fontSize = localStorage.getItem('fontSize') || 'medium';
+                document.documentElement.setAttribute('data-font-size', fontSize);
+            };
 
             // Jalankan segera
-            initTheme();
+            window.applyThemeSettings();
 
-            // Jalankan lagi saat pindah halaman (Astro View Transitions)
-            document.addEventListener('astro:after-swap', initTheme);
+            // Jalankan saat transisi halaman Astro selesai
+            document.addEventListener('astro:after-swap', window.applyThemeSettings);
         </script>
     </head>
     

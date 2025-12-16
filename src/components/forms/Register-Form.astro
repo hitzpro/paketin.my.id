@@ -2,7 +2,7 @@
 // src/components/forms/Register-Form.astro
 ---
 
-<form id="register-form" class="w-full max-w-[380px] mx-auto flex flex-col gap-4">
+<form id="register-form" class="w-full max-w-[24rem] mx-auto flex flex-col gap-4">
   
   <div>
       <label for="reg-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Lengkap</label>
@@ -53,7 +53,7 @@
      <label for="reg-confirm-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Konfirmasi Password</label>
      <div class="flex">
        <span class="inline-flex items-center px-3 text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-slate-700 border border-r-0 border-gray-300 dark:border-slate-600 rounded-l-lg">
-          <i class="fa-solid fa-lock w-4 h-4"></i>
+           <i class="fa-solid fa-lock w-4 h-4"></i>
        </span>
        <div class="relative w-full">
           <input type="password" id="reg-confirm-password" class="rounded-none rounded-r-lg bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5 pr-10 outline-none placeholder-gray-400 dark:placeholder-gray-500" placeholder="••••••••" required>
@@ -77,7 +77,7 @@
 
   <div class="text-center">
     <p class="text-sm text-slate-600 dark:text-slate-400">
-      Sudah punya akun? 
+      Sudah punya akun?
       <a href="/auth/login" class="font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors hover:underline">
         Masuk disini
       </a>
@@ -87,8 +87,6 @@
 
 <script>
   import { initRegisterForm } from '../../scripts/auth/register.js';
-  
-  // Jalankan saat halaman diload (Support Astro View Transitions)
   document.addEventListener('astro:page-load', () => {
       initRegisterForm();
   });

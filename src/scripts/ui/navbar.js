@@ -58,39 +58,48 @@ function renderNavbarAuth() {
 }
 
 /* -----------------------------------------------------------
-   2. DARK MODE & FONT SIZE
+   2. DARK MODE & FONT SIZE (UPDATED)
 ----------------------------------------------------------- */
-function initNavbarSettings() {
+export function initNavbarSettings() {
     const html = document.documentElement;
-    const body = document.body;
+    // const body = document.body; // <-- Hapus ini, tidak dipakai lagi
 
-    // DARK MODE
+    // A. DARK MODE (Tetap sama, sudah benar)
     const toggle = document.getElementById('nav-toggle-darkmode');
     if (toggle) {
-        toggle.checked = html.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
+        // Cek kondisi awal
+        const isDark = html.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
+        toggle.checked = isDark;
 
         toggle.addEventListener('change', (e) => {
             const dark = e.target.checked;
-
             html.classList.toggle('dark', dark);
             html.setAttribute('data-theme', dark ? 'dark' : 'light');
             localStorage.setItem('theme', dark ? 'dark' : 'light');
         });
     }
 
-    // FONT SIZE
+    // B. FONT SIZE (LOGIKA BARU)
+    // Gunakan event delegation agar efisien
     document.addEventListener("click", (e) => {
+        // Cari tombol font size terdekat
         const btn = e.target.closest(".nav-font-btn");
         if (!btn) return;
 
-        const size = btn.dataset.size;
-        body.classList.remove('text-sm', 'text-base', 'text-lg');
+        // Ambil data-size="small/medium/large"
+        const size = btn.dataset.size; 
+        
+        if (size) {
+            // 1. UBAH ATRIBUT DI ROOT (HTML)
+            // Ini yang bikin CSS global.css bereaksi dan membesarkan 1rem
+            html.setAttribute('data-font-size', size);
 
-        if (size === 'small') body.classList.add('text-sm');
-        else if (size === 'large') body.classList.add('text-lg');
-        else body.classList.add('text-base');
+            // 2. Simpan ke LocalStorage
+            localStorage.setItem('fontSize', size);
 
-        localStorage.setItem('fontSize', size);
+            // (Opsional) Log untuk debug
+            console.log(`Font size diubah via Navbar ke: ${size}`);
+        }
     });
 }
 
